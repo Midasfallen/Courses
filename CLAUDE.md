@@ -148,6 +148,7 @@ C:\Courses\                            # ← корень проекта (git ro
 - Build command: нет (статический сайт)
 - Production branch: `main`
 - **Автодеплой** при `git push origin main`
+- URL: `https://logic-architecture.pages.dev`
 - Домен: пока `*.pages.dev`, кастомный домен будет подключен позже
 
 ### Cloudflare Worker (бэкенд форм)
