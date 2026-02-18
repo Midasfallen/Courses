@@ -280,6 +280,13 @@
         .fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,125,245,.1)}
         .fi::placeholder{color:var(--t3)}
         textarea.fi{resize:vertical;min-height:80px}
+        .modal--contact .mdesc{margin-bottom:16px;line-height:1.6}
+        .contact-list{list-style:none;padding:0;margin:0 0 28px}
+        .contact-list li{position:relative;padding:8px 0 8px 20px;font-size:14px;color:var(--t2);line-height:1.5}
+        .contact-list li::before{content:'—';position:absolute;left:0;color:var(--t3)}
+        .btn--tg{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:16px 24px;border-radius:12px;background:linear-gradient(135deg,#2AABEE,#229ED9);color:#fff;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;text-decoration:none;transition:all .3s;border:none;cursor:pointer}
+        .btn--tg:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(34,158,217,.35)}
+        .btn--tg svg{flex-shrink:0}
 
         /* ===== FOOTER ===== */
         .footer{position:relative;z-index:1;text-align:center;padding:40px;border-top:1px solid var(--brd)}
@@ -422,7 +429,7 @@
         <div class="nav-tab" data-tab="about">О нас</div>
         <div class="nav-tab" data-tab="join">Присоединиться</div>
     </nav>
-    <button class="btn btn--gold hcta" onclick="openModal()">Оставить заявку</button>
+    <button class="btn btn--gold hcta" onclick="openModal()">Связаться с нами</button>
 </header>
 
 <!-- HERO -->
@@ -514,7 +521,7 @@
             <p class="desc">Помощь с подготовкой рефератов, эссе, контрольных и докладов</p>
             <div class="price">от 3 000 ₽</div>
             <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal('Реферат / эссе')">Узнать стоимость</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Узнать стоимость</button>
         </div>
         <div class="pkg hot">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">📘</div>
@@ -523,7 +530,7 @@
             <p class="desc">Помощь с курсовыми по любому направлению. Учтём методичку и требования преподавателя</p>
             <div class="price">от 12 000 ₽</div>
             <div class="note">срок от 3 дней</div>
-            <button class="btn btn--blue" style="width:100%" onclick="openModal('Курсовая работа')">Рассчитать стоимость</button>
+            <button class="btn btn--blue" style="width:100%" onclick="openModal()">Рассчитать стоимость</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(212,168,83,.04))">🎓</div>
@@ -532,7 +539,7 @@
             <p class="desc">Полное сопровождение — от выбора темы до подготовки к защите. Презентация и речь в подарок</p>
             <div class="price">от 35 000 ₽</div>
             <div class="note">срок от 7 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal('Дипломная / ВКР')">Обсудить проект</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Обсудить проект</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">🔬</div>
@@ -541,7 +548,7 @@
             <p class="desc">Глубокая проработка для магистрантов. Актуальные источники, научная новизна, полное оформление</p>
             <div class="price">от 50 000 ₽</div>
             <div class="note">срок от 14 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal('Магистерская диссертация')">Получить консультацию</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Получить консультацию</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon">📄</div>
@@ -550,7 +557,7 @@
             <p class="desc">Помощь с подготовкой статей для ВАК и РИНЦ. Подбор журнала, оформление по требованиям</p>
             <div class="price">от 15 000 ₽</div>
             <div class="note">срок от 5 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal('Научная статья (ВАК / РИНЦ)')">Запросить оценку</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Запросить оценку</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(74,222,128,.15),rgba(74,222,128,.04))">✨</div>
@@ -559,7 +566,7 @@
             <p class="desc">Уже написали работу, но антиплагиат не пропускает? Поможем повысить оригинальность без потери смысла</p>
             <div class="price">от 5 000 ₽</div>
             <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal('Повышение оригинальности')">Отправить работу на оценку</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Отправить работу на оценку</button>
         </div>
     </div>
     <div class="incl" data-aos="fade-up" data-aos-delay="100">
@@ -1013,32 +1020,19 @@
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal">
+    <div class="modal modal--contact">
         <button class="modal-close" onclick="closeModal()">×</button>
-        <h3>Оставить заявку</h3>
-        <p class="mdesc">Опишите задачу — мы бесплатно оценим сложность и сроки</p>
-        <div class="fg"><label>Ваше имя</label><input type="text" class="fi" name="name" id="modal-name" placeholder="Как к вам обращаться?"></div>
-        <div class="fg"><label>Telegram / Телефон</label><input type="text" class="fi" name="contact" id="modal-contact" placeholder="@username или +7..."></div>
-        <div class="fg"><label>Тип работы</label>
-            <select class="fi" name="work_type" id="modal-work-type">
-                <option value="">Выберите тип работы</option>
-                <option>Реферат / эссе</option><option>Курсовая работа</option><option>Дипломная / ВКР</option>
-                <option>Магистерская диссертация</option><option>Научная статья (ВАК / РИНЦ)</option>
-                <option>Повышение оригинальности</option>
-                <option disabled>— Для бизнеса —</option>
-                <option>Проектная документация (BRD, SRS, ТЭО)</option>
-                <option>Техническая документация (API, SAD, ER)</option>
-                <option>Тестовая документация (тест-план, кейсы)</option>
-                <option>Документация для пользователей</option>
-                <option>Юридическая документация (NDA, MSA, SOW)</option>
-                <option>Pitch Deck / документы для инвесторов</option>
-                <option>Другое</option>
-            </select>
-        </div>
-        <div class="fg"><label>Комментарий</label><textarea class="fi" name="comment" id="modal-comment" placeholder="Тема, дедлайн, особые требования..."></textarea></div>
-        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true"><input type="text" name="website" id="modal-hp" tabindex="-1" autocomplete="off"></div>
-        <button class="btn btn--gold" style="width:100%;padding:14px;font-size:15px;margin-top:8px" onclick="submitOrder()">Отправить заявку</button>
-        <p class="modal-alt">или напишите напрямую: <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">@LogicArchitecture</a></p>
+        <h3>Связаться с нами</h3>
+        <p class="mdesc">Напишите нам в Telegram — максимально подробно изложите вашу задачу, чтобы мы могли оказать качественную консультацию:</p>
+        <ul class="contact-list">
+            <li>Тип работы (курсовая, диплом, статья…)</li>
+            <li>Тема или направление</li>
+            <li>Сроки и особые требования</li>
+        </ul>
+        <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener" class="btn btn--tg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.48-.428-.013-1.252-.242-1.865-.44-.751-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            Написать в Telegram
+        </a>
     </div>
 </div>
 
@@ -1169,7 +1163,7 @@ document.querySelectorAll('.metrics').forEach(el=>heroObs.observe(el));
 window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',window.scrollY>50)});
 
 // ===== MODAL =====
-function openModal(preselect){document.getElementById('modalOverlay').classList.add('active');document.body.style.overflow='hidden';if(preselect){const sel=document.getElementById('modal-work-type');for(let i=0;i<sel.options.length;i++){if(sel.options[i].text===preselect){sel.selectedIndex=i;break}}}}
+function openModal(){document.getElementById('modalOverlay').classList.add('active');document.body.style.overflow='hidden'}
 function closeModal(e){if(e&&e.target!==e.currentTarget&&!e.target.classList.contains('modal-close'))return;document.getElementById('modalOverlay').classList.remove('active');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 
@@ -1188,30 +1182,6 @@ const API_URL='https://la-api.ravinski-genlawyer.workers.dev';
 const pageLoadTime=Date.now();
 function isRateLimited(){const t=localStorage.getItem('la_rl');return t&&Date.now()-parseInt(t)<60000}
 function setRateLimit(){localStorage.setItem('la_rl',Date.now().toString())}
-
-// ===== SUBMIT ORDER (modal form) =====
-async function submitOrder(){
-    const name=document.getElementById('modal-name').value.trim();
-    const contact=document.getElementById('modal-contact').value.trim();
-    const workType=document.getElementById('modal-work-type').value;
-    const comment=document.getElementById('modal-comment').value.trim();
-    const hp=document.getElementById('modal-hp').value;
-    if(hp)return;
-    if(Date.now()-pageLoadTime<3000)return;
-    if(isRateLimited()){showToast('Подождите минуту перед повторной отправкой','warning');return}
-    if(!name){showToast('Укажите ваше имя','warning');return}
-    if(!contact){showToast('Укажите контакт для связи','warning');return}
-    const btn=document.querySelector('#modalOverlay .btn--gold');
-    btn.disabled=true;btn.textContent='Отправляем...';
-    try{
-        const res=await fetch(API_URL+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,contact,workType,comment,source:'modal'})});
-        if(!res.ok)throw new Error();
-        closeModal();showToast('Заявка отправлена! Свяжемся в течение часа','success');setRateLimit();
-        document.getElementById('modal-name').value='';document.getElementById('modal-contact').value='';
-        document.getElementById('modal-work-type').value='';document.getElementById('modal-comment').value='';
-    }catch{showToast('Ошибка отправки. Напишите нам напрямую в Telegram','error')}
-    finally{btn.disabled=false;btn.textContent='Отправить заявку'}
-}
 
 // ===== SUBMIT JOIN =====
 async function submitJoin(){
