@@ -1,2 +1,5 @@
 .claude/
 nul
+worker/.dev.vars
+worker/.wrangler/
+worker/node_modules/

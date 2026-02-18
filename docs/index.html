@@ -4,7 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Logic Architecture — Помощь студентам с учебными работами</title>
+    <meta name="description" content="Помощь с подготовкой дипломных, курсовых, рефератов и научных статей. Техническая документация для бизнеса. Конфиденциально и в срок.">
+    <meta property="og:title" content="Logic Architecture — Помощь с учебными работами">
+    <meta property="og:description" content="От подбора темы до успешной защиты. Дипломы, курсовые, рефераты, научные статьи. B2B документация.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f7df5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5z'/><path d='M2 17l10 5 10-5'/><path d='M2 12l10 5 10-5'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
     <style>
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
         :root{
@@ -369,9 +376,20 @@
             .metrics{background:rgba(13,13,22,.9)}
         }
 
-        /* ===== SCROLL ANIMATE ===== */
-        .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
-        .reveal.visible{opacity:1;transform:translateY(0)}
+        /* ===== TYPED CURSOR ===== */
+        .typed-cursor{color:var(--gold);font-weight:300}
+
+        /* ===== TOAST ===== */
+        .toast{position:fixed;top:80px;right:20px;z-index:100000;padding:16px 24px;border-radius:12px;font-size:14px;font-weight:500;transform:translateX(120%);transition:transform .4s cubic-bezier(.4,0,.2,1);max-width:360px}
+        .toast.show{transform:translateX(0)}
+        .toast.success{background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.3);color:var(--green)}
+        .toast.error{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--red)}
+        .toast.warning{background:rgba(212,168,83,.15);border:1px solid rgba(212,168,83,.3);color:var(--gold)}
+
+        /* ===== MODAL ALT LINK ===== */
+        .modal-alt{text-align:center;font-size:13px;color:var(--t3);margin-top:12px}
+        .modal-alt a{color:var(--blue);text-decoration:none}
+        .modal-alt a:hover{text-decoration:underline}
     </style>
 </head>
 <body>
@@ -410,7 +428,7 @@
 <!-- HERO -->
 <section class="hero">
     <div class="badge"><span class="badge-dot"></span>Помощь студентам с 2024 года</div>
-    <h1>Поможем подготовить<br><span class="grad">диплом, курсовую</span><br>или реферат</h1>
+    <h1>Поможем подготовить<br><span class="grad"><span id="typed-target"></span></span></h1>
     <p class="sub">Не можете пройти антиплагиат? Преподаватель возвращает работу снова и снова? Мы поможем — от подбора темы до успешной защиты. Конфиденциально и в срок.</p>
     <div class="hero-btns">
         <button class="btn btn--blue" onclick="openModal()">Узнать стоимость бесплатно</button>
@@ -443,7 +461,7 @@
         <p>Мы знаем, с чем вы сталкиваетесь, и знаем, как помочь</p>
     </div>
 
-    <div class="features reveal">
+    <div class="features" data-aos="fade-up">
         <div class="feat">
             <div class="feat-icon">🚫</div>
             <h3>Антиплагиат не пропускает</h3>
@@ -496,7 +514,7 @@
             <p class="desc">Помощь с подготовкой рефератов, эссе, контрольных и докладов</p>
             <div class="price">от 3 000 ₽</div>
             <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Узнать стоимость</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal('Реферат / эссе')">Узнать стоимость</button>
         </div>
         <div class="pkg hot">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">📘</div>
@@ -505,7 +523,7 @@
             <p class="desc">Помощь с курсовыми по любому направлению. Учтём методичку и требования преподавателя</p>
             <div class="price">от 12 000 ₽</div>
             <div class="note">срок от 3 дней</div>
-            <button class="btn btn--blue" style="width:100%" onclick="openModal()">Рассчитать стоимость</button>
+            <button class="btn btn--blue" style="width:100%" onclick="openModal('Курсовая работа')">Рассчитать стоимость</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(212,168,83,.04))">🎓</div>
@@ -514,7 +532,7 @@
             <p class="desc">Полное сопровождение — от выбора темы до подготовки к защите. Презентация и речь в подарок</p>
             <div class="price">от 35 000 ₽</div>
             <div class="note">срок от 7 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Обсудить проект</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal('Дипломная / ВКР')">Обсудить проект</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">🔬</div>
@@ -523,7 +541,7 @@
             <p class="desc">Глубокая проработка для магистрантов. Актуальные источники, научная новизна, полное оформление</p>
             <div class="price">от 50 000 ₽</div>
             <div class="note">срок от 14 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Получить консультацию</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal('Магистерская диссертация')">Получить консультацию</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon">📄</div>
@@ -532,7 +550,7 @@
             <p class="desc">Помощь с подготовкой статей для ВАК и РИНЦ. Подбор журнала, оформление по требованиям</p>
             <div class="price">от 15 000 ₽</div>
             <div class="note">срок от 5 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Запросить оценку</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal('Научная статья (ВАК / РИНЦ)')">Запросить оценку</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(74,222,128,.15),rgba(74,222,128,.04))">✨</div>
@@ -541,10 +559,10 @@
             <p class="desc">Уже написали работу, но антиплагиат не пропускает? Поможем повысить оригинальность без потери смысла</p>
             <div class="price">от 5 000 ₽</div>
             <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Отправить работу на оценку</button>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal('Повышение оригинальности')">Отправить работу на оценку</button>
         </div>
     </div>
-    <div class="incl reveal">
+    <div class="incl" data-aos="fade-up" data-aos-delay="100">
         <h4>🛡️ Включено в каждый проект</h4>
         <div class="incl-grid">
             <div class="incl-item"><span class="ck">✓</span> Консультация по теме и структуре</div>
@@ -566,7 +584,7 @@
         <p>Собственная разработка, объединяющая лучшие инструменты в единую экосистему</p>
     </div>
 
-    <div class="tech-grid reveal">
+    <div class="tech-grid" data-aos="fade-up">
         <div class="tcard">
             <div class="tcard-icon">🧠</div>
             <div class="tcard-tag">AI Engine</div>
@@ -605,7 +623,7 @@
         </div>
     </div>
 
-    <div class="tech-arch reveal">
+    <div class="tech-arch" data-aos="fade-up" data-aos-delay="100">
         <div class="tech-arch-content">
             <h3>Единая экосистема собственной разработки</h3>
             <p>Мы не используем готовые платформы. Наша команда спроектировала и построила систему с нуля, объединив лучший технологический стек 2026 года в единый программный комплекс. Каждый компонент подобран и интегрирован для максимальной производительности и безопасности.</p>
@@ -627,7 +645,7 @@
         </div>
     </div>
 
-    <div class="sec-block reveal">
+    <div class="sec-block" data-aos="fade-up" data-aos-delay="200">
         <h3>🔐 Безопасность на уровне финтех-корпораций</h3>
         <p>Инфраструктура построена по стандартам банковской безопасности. Весь трафик проходит через зашифрованные VPN-туннели. Коммуникации между узлами защищены протоколами корпоративного уровня, обеспечивающими максимальную защиту данных.</p>
         <div class="sec-tags">
@@ -648,13 +666,13 @@
         <p>Подготовка полного спектра документации — от ТЗ и регламентов до Pitch Deck и юридических документов</p>
     </div>
 
-    <div class="biz-hero reveal">
+    <div class="biz-hero" data-aos="fade-up">
         <h3>Системный подход к документации</h3>
         <p>Каждый IT-проект начинается и заканчивается документацией. Техническое задание, архитектурный документ, пользовательская инструкция, Pitch Deck для инвестора — без этих документов невозможно ни начать разработку, ни привлечь финансирование, ни пройти сертификацию.</p>
         <p style="margin-top:16px">Logic Architecture объединяет экспертизу в системном анализе из крупнейших финансовых институтов и современный AI-стек для подготовки документации любой сложности — структурированно, в срок и по стандартам.</p>
     </div>
 
-    <div class="biz-grid reveal">
+    <div class="biz-grid" data-aos="fade-up" data-aos-delay="100">
         <div class="biz-card">
             <div class="biz-card-icon">📋</div>
             <div class="biz-card-tag">Project Docs</div>
@@ -732,7 +750,7 @@
         </div>
     </div>
 
-    <div class="biz-why reveal">
+    <div class="biz-why" data-aos="fade-up" data-aos-delay="200">
         <div class="biz-why-content">
             <h3>Почему Logic Architecture</h3>
             <p>Мы не просто пишем документацию — мы проектируем её как систему, где каждый документ связан с остальными и решает конкретную бизнес-задачу.</p>
@@ -764,12 +782,12 @@
         <p>Проверенная технология, растущий рынок, амбициозные планы</p>
     </div>
 
-    <div class="inv-hero reveal">
+    <div class="inv-hero" data-aos="fade-up">
         <h3>От образовательного консалтинга к международным рынкам</h3>
         <p>Logic Architecture — это не просто сервис. Это технологическая платформа с проприетарным AI-стеком, готовая к масштабированию на смежные рынки: техническая документация, подготовка заявок в международные акселераторы, разработка собственных IT-продуктов.</p>
     </div>
 
-    <div class="inv-grid reveal">
+    <div class="inv-grid" data-aos="fade-up" data-aos-delay="100">
         <div class="inv-card">
             <h4>🚀 Стратегия роста</h4>
             <p>Мы планируем выход на рынок профессиональной документации для участия в международных акселераторах и грантовых программах. Наша технология позволяет готовить документацию уровня, который принимают ведущие фонды.</p>
@@ -813,7 +831,7 @@
         <p>От банковской карьеры к глобальному децентрализованному сообществу учёных и разработчиков</p>
     </div>
 
-    <div class="about-main reveal">
+    <div class="about-main" data-aos="fade-up">
         <div class="about-photo">🌏</div>
         <div class="about-info">
             <h3>Founder & Architect</h3>
@@ -832,7 +850,7 @@
         </div>
     </div>
 
-    <div class="about-timeline reveal">
+    <div class="about-timeline" data-aos="fade-up" data-aos-delay="100">
         <div class="tl-item">
             <div class="tl-dot">🏦</div>
             <div class="tl-content">
@@ -864,7 +882,7 @@
     </div>
 
     <!-- DAO BLOCK -->
-    <div class="dao-block reveal">
+    <div class="dao-block" data-aos="fade-up" data-aos-delay="200">
         <div class="dao-header">
             <div class="dao-icon-wrap"><span>🌐</span></div>
             <div>
@@ -902,7 +920,7 @@
         </div>
     </div>
 
-    <div class="quote-block reveal">
+    <div class="quote-block" data-aos="fade-up" data-aos-delay="100">
         <div class="icon">💎</div>
         <p>Я создал Logic Architecture не ради прибыли, а ради идеи: что передовые технологии должны работать на людей, а не против них. Каждый человек заслуживает инструменты, которые раньше были доступны только корпорациям.</p>
         <div class="sig">— Founder & Architect</div>
@@ -917,12 +935,12 @@
         <p>Мы привлекаем учёных и разработчиков из разных сфер для совместного продвижения науки и технологий</p>
     </div>
 
-    <div class="join-hero reveal">
+    <div class="join-hero" data-aos="fade-up">
         <h3>Децентрализованное сообщество без границ</h3>
         <p>Logic Architecture объединяет людей из разных стран и дисциплин. У нас нет формальных барьеров: не важно, вы PhD-исследователь, junior-разработчик или студент с горящими глазами. Если наши цели вам близки — вы уже один из нас.</p>
     </div>
 
-    <div class="join-roles reveal">
+    <div class="join-roles" data-aos="fade-up" data-aos-delay="100">
         <div class="join-role">
             <div class="join-role-icon">🔬</div>
             <h4>Учёные и исследователи</h4>
@@ -940,7 +958,7 @@
         </div>
     </div>
 
-    <div class="join-values reveal">
+    <div class="join-values" data-aos="fade-up" data-aos-delay="200">
         <div class="join-value">
             <div class="join-value-icon">🌍</div>
             <div>
@@ -971,14 +989,16 @@
         </div>
     </div>
 
-    <div class="join-form-wrap reveal">
+    <div class="join-form-wrap" data-aos="fade-up" data-aos-delay="100">
         <h3>Расскажите о себе</h3>
         <p class="jfdesc">Заполните форму — мы свяжемся с вами через защищённый канал</p>
-        <div class="fg"><label>О себе</label><textarea class="fi" placeholder="Кто вы, чем занимаетесь, что вас мотивирует..." style="min-height:100px"></textarea></div>
-        <div class="fg"><label>Опыт и стек</label><textarea class="fi" placeholder="Ваш профессиональный опыт, технологии, научные области..." style="min-height:100px"></textarea></div>
-        <div class="fg"><label>Хобби и увлечения</label><textarea class="fi" placeholder="Чем увлекаетесь помимо работы? Это помогает нам лучше понять вас как личность..." style="min-height:80px"></textarea></div>
-        <div class="fg"><label>Контакты для связи</label><input type="text" class="fi" placeholder="Telegram, email или любой удобный мессенджер..."></div>
-        <button class="btn btn--green" style="width:100%;padding:14px;font-size:15px;margin-top:12px" onclick="alert('Спасибо! Мы свяжемся с вами в ближайшее время.')">Присоединиться</button>
+        <div class="fg"><label>О себе</label><textarea class="fi" name="about" id="join-about" placeholder="Кто вы, чем занимаетесь, что вас мотивирует..." style="min-height:100px"></textarea></div>
+        <div class="fg"><label>Опыт и стек</label><textarea class="fi" name="experience" id="join-experience" placeholder="Ваш профессиональный опыт, технологии, научные области..." style="min-height:100px"></textarea></div>
+        <div class="fg"><label>Хобби и увлечения</label><textarea class="fi" name="hobbies" id="join-hobbies" placeholder="Чем увлекаетесь помимо работы? Это помогает нам лучше понять вас как личность..." style="min-height:80px"></textarea></div>
+        <div class="fg"><label>Контакты для связи</label><input type="text" class="fi" name="contact" id="join-contact" placeholder="Telegram, email или любой удобный мессенджер..."></div>
+        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true"><input type="text" name="website" id="join-hp" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn--green" style="width:100%;padding:14px;font-size:15px;margin-top:12px" onclick="submitJoin()">Присоединиться</button>
+        <p class="modal-alt">или напишите напрямую: <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">@LogicArchitecture</a></p>
     </div>
 </div>
 
@@ -987,7 +1007,8 @@
 <!-- FOOTER -->
 <footer class="footer">
     <p>© 2026 Logic Architecture. Помощь с подготовкой учебных работ.<br>
-    <a href="#">Telegram</a> · Конфиденциально · Все права защищены</p>
+    <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">Telegram</a> · Конфиденциально · Все права защищены</p>
+    <p style="margin-top:12px;font-size:11px;color:var(--t3);max-width:600px;margin-left:auto;margin-right:auto;line-height:1.5">Материалы, предоставляемые Logic Architecture, носят вспомогательный характер и предназначены для помощи в подготовке учебных работ.</p>
 </footer>
 
 <!-- MODAL -->
@@ -996,10 +1017,10 @@
         <button class="modal-close" onclick="closeModal()">×</button>
         <h3>Оставить заявку</h3>
         <p class="mdesc">Опишите задачу — мы бесплатно оценим сложность и сроки</p>
-        <div class="fg"><label>Ваше имя</label><input type="text" class="fi" placeholder="Как к вам обращаться?"></div>
-        <div class="fg"><label>Telegram / Телефон</label><input type="text" class="fi" placeholder="@username или +7..."></div>
+        <div class="fg"><label>Ваше имя</label><input type="text" class="fi" name="name" id="modal-name" placeholder="Как к вам обращаться?"></div>
+        <div class="fg"><label>Telegram / Телефон</label><input type="text" class="fi" name="contact" id="modal-contact" placeholder="@username или +7..."></div>
         <div class="fg"><label>Тип работы</label>
-            <select class="fi">
+            <select class="fi" name="work_type" id="modal-work-type">
                 <option value="">Выберите тип работы</option>
                 <option>Реферат / эссе</option><option>Курсовая работа</option><option>Дипломная / ВКР</option>
                 <option>Магистерская диссертация</option><option>Научная статья (ВАК / РИНЦ)</option>
@@ -1014,11 +1035,15 @@
                 <option>Другое</option>
             </select>
         </div>
-        <div class="fg"><label>Комментарий</label><textarea class="fi" placeholder="Тема, дедлайн, особые требования..."></textarea></div>
-        <button class="btn btn--gold" style="width:100%;padding:14px;font-size:15px;margin-top:8px">Отправить заявку</button>
+        <div class="fg"><label>Комментарий</label><textarea class="fi" name="comment" id="modal-comment" placeholder="Тема, дедлайн, особые требования..."></textarea></div>
+        <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true"><input type="text" name="website" id="modal-hp" tabindex="-1" autocomplete="off"></div>
+        <button class="btn btn--gold" style="width:100%;padding:14px;font-size:15px;margin-top:8px" onclick="submitOrder()">Отправить заявку</button>
+        <p class="modal-alt">или напишите напрямую: <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">@LogicArchitecture</a></p>
     </div>
 </div>
 
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
 <script>
 // ===== CANVAS — chaotic particles with rare temporary connections =====
 const canvas=document.getElementById('neural-bg'),ctx=canvas.getContext('2d');
@@ -1118,7 +1143,7 @@ function switchTab(name){
     tcs.forEach(c=>{c.classList.remove('active');c.style.display='none'});
     const target=document.getElementById('tab-'+name);
     target.style.display='block';void target.offsetWidth;target.classList.add('active');
-    animateCounters(target);revealElements(target);
+    animateCounters(target);AOS.refresh();
     navEl.classList.remove('mobile-open');hamEl.classList.remove('active');
     const mainEl=document.getElementById('tabContainer');
     if(name==='home'){heroEl.style.display='';mainEl.classList.remove('no-hero');mainEl.scrollIntoView({behavior:'smooth',block:'start'})}
@@ -1136,26 +1161,87 @@ function animateCounters(container=document){
     });
 }
 
-// ===== REVEAL ON SCROLL =====
-function revealElements(container=document){
-    container.querySelectorAll('.reveal').forEach(el=>{
-        const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target)}})},{threshold:.15});
-        obs.observe(el);
-    });
-}
-
 // Initial
 const heroObs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){animateCounters(e.target);heroObs.unobserve(e.target)}})},{threshold:.5});
 document.querySelectorAll('.metrics').forEach(el=>heroObs.observe(el));
-revealElements();
 
 // ===== HEADER SCROLL =====
 window.addEventListener('scroll',()=>{document.getElementById('header').classList.toggle('scrolled',window.scrollY>50)});
 
 // ===== MODAL =====
-function openModal(){document.getElementById('modalOverlay').classList.add('active');document.body.style.overflow='hidden'}
+function openModal(preselect){document.getElementById('modalOverlay').classList.add('active');document.body.style.overflow='hidden';if(preselect){const sel=document.getElementById('modal-work-type');for(let i=0;i<sel.options.length;i++){if(sel.options[i].text===preselect){sel.selectedIndex=i;break}}}}
 function closeModal(e){if(e&&e.target!==e.currentTarget&&!e.target.classList.contains('modal-close'))return;document.getElementById('modalOverlay').classList.remove('active');document.body.style.overflow=''}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+
+// ===== TOAST =====
+function showToast(msg,type='success'){
+    const el=document.createElement('div');
+    el.className='toast '+type;
+    el.textContent=msg;
+    document.body.appendChild(el);
+    requestAnimationFrame(()=>el.classList.add('show'));
+    setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},4000);
+}
+
+// ===== FORM HELPERS =====
+const API_URL='https://la-api.ravinski-genlawyer.workers.dev';
+const pageLoadTime=Date.now();
+function isRateLimited(){const t=localStorage.getItem('la_rl');return t&&Date.now()-parseInt(t)<60000}
+function setRateLimit(){localStorage.setItem('la_rl',Date.now().toString())}
+
+// ===== SUBMIT ORDER (modal form) =====
+async function submitOrder(){
+    const name=document.getElementById('modal-name').value.trim();
+    const contact=document.getElementById('modal-contact').value.trim();
+    const workType=document.getElementById('modal-work-type').value;
+    const comment=document.getElementById('modal-comment').value.trim();
+    const hp=document.getElementById('modal-hp').value;
+    if(hp)return;
+    if(Date.now()-pageLoadTime<3000)return;
+    if(isRateLimited()){showToast('Подождите минуту перед повторной отправкой','warning');return}
+    if(!name){showToast('Укажите ваше имя','warning');return}
+    if(!contact){showToast('Укажите контакт для связи','warning');return}
+    const btn=document.querySelector('#modalOverlay .btn--gold');
+    btn.disabled=true;btn.textContent='Отправляем...';
+    try{
+        const res=await fetch(API_URL+'/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,contact,workType,comment,source:'modal'})});
+        if(!res.ok)throw new Error();
+        closeModal();showToast('Заявка отправлена! Свяжемся в течение часа','success');setRateLimit();
+        document.getElementById('modal-name').value='';document.getElementById('modal-contact').value='';
+        document.getElementById('modal-work-type').value='';document.getElementById('modal-comment').value='';
+    }catch{showToast('Ошибка отправки. Напишите нам напрямую в Telegram','error')}
+    finally{btn.disabled=false;btn.textContent='Отправить заявку'}
+}
+
+// ===== SUBMIT JOIN =====
+async function submitJoin(){
+    const about=document.getElementById('join-about').value.trim();
+    const experience=document.getElementById('join-experience').value.trim();
+    const hobbies=document.getElementById('join-hobbies').value.trim();
+    const contact=document.getElementById('join-contact').value.trim();
+    const hp=document.getElementById('join-hp').value;
+    if(hp)return;
+    if(Date.now()-pageLoadTime<3000)return;
+    if(isRateLimited()){showToast('Подождите минуту перед повторной отправкой','warning');return}
+    if(!contact){showToast('Укажите контакт для связи','warning');return}
+    const btn=document.querySelector('.join-form-wrap .btn--green');
+    btn.disabled=true;btn.textContent='Отправляем...';
+    try{
+        const res=await fetch(API_URL+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({about,experience,hobbies,contact})});
+        if(!res.ok)throw new Error();
+        showToast('Заявка отправлена! Мы свяжемся через защищённый канал','success');setRateLimit();
+        document.getElementById('join-about').value='';document.getElementById('join-experience').value='';
+        document.getElementById('join-hobbies').value='';document.getElementById('join-contact').value='';
+    }catch{showToast('Ошибка отправки. Напишите нам напрямую в Telegram','error')}
+    finally{btn.disabled=false;btn.textContent='Присоединиться'}
+}
+
+// ===== AOS INIT =====
+AOS.init({duration:600,once:true,offset:80});
+
+// ===== TYPED.JS =====
+new Typed('#typed-target',{strings:['диплом','курсовую','реферат','научную статью','магистерскую'],typeSpeed:70,backSpeed:40,backDelay:2000,loop:true,showCursor:true,cursorChar:'|'});
+
 </script>
 </body>
 </html>
