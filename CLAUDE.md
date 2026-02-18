@@ -34,6 +34,11 @@ C:\Courses\                            # ← корень проекта (git ro
 │           ├── data_marketing.md           # Сырая переписка с Gemini (маркетинг)
 │           └── Бизнес-план Гебас+Ромас.md  # Бизнес-план (черновик)
 │
+├── worker\                            # Cloudflare Worker (бэкенд форм)
+│   ├── worker.js                      # Worker код (POST /order, /join → Telegram)
+│   ├── wrangler.toml                  # Конфигурация деплоя Worker
+│   └── .dev.vars                      # Локальные секреты (в .gitignore)
+│
 └── examples\                          # Примеры выполненных работ (портфолио)
     ├── ПРИМЕР_КУРСОВАЯ_ЗАЩИТА_СОБСТВЕННОСТИ.md
     ├── КУРСОВАЯ_ПЛАГИАТ_МУЗЫКА.md
@@ -134,6 +139,33 @@ C:\Courses\                            # ← корень проекта (git ro
 - **SEO** — органический трафик
 - **Habr** — B2B экспертные статьи (с месяца 4)
 - **Сарафанное радио** — реферальная программа
+
+## Инфраструктура и деплой
+
+### Хостинг
+- **Cloudflare Pages** — статический хостинг для `docs/index.html`
+- Publish directory: `docs/`
+- Build command: нет (статический сайт)
+- Production branch: `main`
+- **Автодеплой** при `git push origin main`
+- Домен: пока `*.pages.dev`, кастомный домен будет подключен позже
+
+### Cloudflare Worker (бэкенд форм)
+- **URL:** `https://la-api.ravinski-genlawyer.workers.dev`
+- **Эндпоинты:** `POST /order` (заявка), `POST /join` (присоединение)
+- **Конфиг:** `worker/wrangler.toml`
+- **Код:** `worker/worker.js`
+- **Secrets:** `TG_TOKEN`, `TG_CHAT_ID` (через `wrangler secret put`)
+- Формы на сайте → Worker → Telegram Bot API → чат основателя
+
+### Антиспам
+- Honeypot-поле (`data.website`) — бот заполняет, обычный пользователь нет
+- Rate limit через `localStorage` — 1 заявка в 60 секунд
+- Задержка 3 секунды после загрузки страницы
+
+### Инструменты Claude
+- Claude может управлять Cloudflare Dashboard через браузер (Chrome MCP + Windows MCP)
+- Claude может деплоить Worker через `wrangler deploy` (bash)
 
 ## Конвенции разработки
 

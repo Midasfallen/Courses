@@ -32,11 +32,13 @@ export default {
             }
         );
 
-        const origin = request.headers.get('Origin') || '*';
+        const origin = request.headers.get('Origin') || '';
+        const allowed = env.ALLOWED_ORIGIN || '*';
+        const corsOrigin = (allowed === '*' || origin === allowed) ? origin : allowed;
         return new Response(JSON.stringify({ ok: tgRes.ok }), {
             headers: {
                 'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': origin,
+                'Access-Control-Allow-Origin': corsOrigin,
                 'Access-Control-Allow-Methods': 'POST',
                 'Access-Control-Allow-Headers': 'Content-Type'
             }
