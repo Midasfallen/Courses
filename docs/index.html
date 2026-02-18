@@ -461,7 +461,6 @@
 
 <!-- HERO -->
 <section class="hero">
-    <div class="badge"><span class="badge-dot"></span>Помощь студентам с 2024 года</div>
     <h1>Поможем подготовить<br><span class="grad"><span id="typed-target"></span></span></h1>
     <p class="sub">Не можете пройти антиплагиат? Преподаватель возвращает работу снова и снова? Мы поможем — от подбора темы до успешной защиты. Конфиденциально и в срок.</p>
     <div class="metrics">
@@ -1163,7 +1162,7 @@ function switchTab(name){
     animateCounters(target);AOS.refresh();
     navEl.classList.remove('mobile-open');hamEl.classList.remove('active');
     const mainEl=document.getElementById('tabContainer');
-    if(name==='home'){heroEl.style.display='';mainEl.classList.remove('no-hero');mainEl.scrollIntoView({behavior:'smooth',block:'start'})}
+    if(name==='home'){heroEl.style.display='';mainEl.classList.remove('no-hero');window.scrollTo({top:0,behavior:'smooth'})}
     else{heroEl.style.display='none';mainEl.classList.add('no-hero');window.scrollTo({top:0,behavior:'smooth'})}
 }
 tabs.forEach(tab=>tab.addEventListener('click',()=>switchTab(tab.dataset.tab)));
