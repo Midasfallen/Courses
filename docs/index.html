@@ -1232,6 +1232,51 @@ const isMobile=isIOS||('ontouchstart' in window&&window.innerWidth<1024);
 const LGHT_LEVELS=isMobile?3:4,LGHT_DISP=0.12,LGHT_REGEN=isMobile?5:3;
 const LGHT_MAX_CONN=isMobile?3:6,LGHT_TENDRIL=isMobile?0:0.15;
 const LGHT_FLICK_SPD=0.35,LGHT_FLICK_AMP=0.25;
+const ICON_BASE=isMobile?5:6,ICON_VAR=isMobile?2:3,ICON_SW=1.2,ICON_GLOW=4;
+const ICON_PATHS=[];
+(function(){
+    // 1. Document — rectangle with folded corner
+    const d=new Path2D();
+    d.moveTo(-.6,-1);d.lineTo(.2,-1);d.lineTo(.6,-.6);d.lineTo(.6,1);d.lineTo(-.6,1);d.closePath();
+    d.moveTo(.2,-1);d.lineTo(.2,-.6);d.lineTo(.6,-.6);
+    ICON_PATHS.push(d);
+    // 2. Gear — 6 teeth + center hole
+    const g=new Path2D();
+    const iR=.45,oR=.85,tw=.28;
+    for(let i=0;i<6;i++){
+        const a=(i/6)*Math.PI*2-Math.PI/2,a1=a-tw,a2=a+tw;
+        if(!i)g.moveTo(Math.cos(a1)*iR,Math.sin(a1)*iR);
+        else g.lineTo(Math.cos(a1)*iR,Math.sin(a1)*iR);
+        g.lineTo(Math.cos(a1)*oR,Math.sin(a1)*oR);
+        g.lineTo(Math.cos(a2)*oR,Math.sin(a2)*oR);
+        g.lineTo(Math.cos(a2)*iR,Math.sin(a2)*iR);
+        const nA=((i+1)/6)*Math.PI*2-Math.PI/2-tw;
+        g.arc(0,0,iR,a2,nA,false);
+    }
+    g.closePath();g.moveTo(.2,0);g.arc(0,0,.2,0,Math.PI*2);
+    ICON_PATHS.push(g);
+    // 3. Code brackets < >
+    const c=new Path2D();
+    c.moveTo(-.3,-.8);c.lineTo(-.8,0);c.lineTo(-.3,.8);
+    c.moveTo(.3,-.8);c.lineTo(.8,0);c.lineTo(.3,.8);
+    ICON_PATHS.push(c);
+    // 4. Lightbulb
+    const l=new Path2D();
+    l.arc(0,-.2,.55,Math.PI*1.15,Math.PI*1.85,true);
+    l.lineTo(.3,.4);l.lineTo(.3,.65);l.lineTo(-.3,.65);l.lineTo(-.3,.4);l.closePath();
+    l.moveTo(-.25,.75);l.lineTo(.25,.75);l.moveTo(-.15,.9);l.lineTo(.15,.9);
+    ICON_PATHS.push(l);
+    // 5. Bar chart — 3 bars + baseline
+    const b=new Path2D();
+    b.moveTo(-.9,.9);b.lineTo(.9,.9);
+    b.rect(-.7,.1,.4,.8);b.rect(-.2,-.6,.4,1.5);b.rect(.3,-.15,.4,1.05);
+    ICON_PATHS.push(b);
+    // 6. Magnifying glass
+    const m=new Path2D();
+    m.arc(-.15,-.15,.55,0,Math.PI*2);m.moveTo(.22,.22);m.lineTo(.85,.85);
+    ICON_PATHS.push(m);
+})();
+const ICON_COUNT=ICON_PATHS.length;
 
 function easeInCubic(t){return t*t*t}
 function easeOutCubic(t){return 1-(1-t)*(1-t)*(1-t)}
@@ -1269,14 +1314,17 @@ function genTendril(pts,idx){
 class Particle{constructor(){this.reset()}
 reset(){
     this.x=Math.random()*canvas.width;this.y=Math.random()*canvas.height;
-    this.size=Math.random()*1.8+.4;
+    this.size=Math.random()*ICON_VAR+ICON_BASE;
     this.baseSpeed=Math.random()*.25+.1;
     this.angle=Math.random()*Math.PI*2;
     this.turnRate=(Math.random()-.5)*.02;
     this.turnTimer=0;this.turnInterval=Math.floor(Math.random()*200)+100;
-    this.opacity=Math.random()*.4+.15;
-    this.color=Math.random()>.5?'79,125,245':'108,92,231';
+    this.opacity=Math.random()*.3+.1;
+    const r=Math.random();this.color=r<.45?'79,125,245':r<.85?'108,92,231':'212,168,83';
     this.pulsePhase=Math.random()*Math.PI*2;
+    this.iconType=Math.floor(Math.random()*ICON_COUNT);
+    this.rotation=Math.random()*Math.PI*2;
+    this.rotSpeed=(Math.random()-.5)*.003;
 }
 update(){
     this.turnTimer++;
@@ -1292,15 +1340,17 @@ update(){
     if(dist<180){const f=(180-dist)/180*.008;this.x-=dx*f;this.y-=dy*f;}
     if(this.x<-20)this.x=canvas.width+20;if(this.x>canvas.width+20)this.x=-20;
     if(this.y<-20)this.y=canvas.height+20;if(this.y>canvas.height+20)this.y=-20;
-    this.pulsePhase+=.02;
+    this.pulsePhase+=.02;this.rotation+=this.rotSpeed;
 }
 draw(){
     const pulse=Math.sin(this.pulsePhase)*.15+.85;
     const sz=this.size*pulse;
-    ctx.beginPath();ctx.arc(this.x,this.y,sz,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${this.color},${this.opacity*pulse})`;ctx.fill();
-    if(sz>1){ctx.beginPath();ctx.arc(this.x,this.y,sz+2,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${this.color},${this.opacity*.15})`;ctx.fill();}
+    ctx.beginPath();ctx.arc(this.x,this.y,sz+ICON_GLOW,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${this.color},${this.opacity*.08})`;ctx.fill();
+    ctx.save();ctx.translate(this.x,this.y);ctx.rotate(this.rotation);ctx.scale(sz,sz);
+    ctx.strokeStyle=`rgba(${this.color},${this.opacity*pulse})`;
+    ctx.lineWidth=ICON_SW/sz;ctx.lineCap='round';ctx.lineJoin='round';
+    ctx.stroke(ICON_PATHS[this.iconType]);ctx.restore();
 }}
 
 class Connection{constructor(a,b){
@@ -1354,7 +1404,7 @@ draw(){
     ctx.restore();
 }}
 
-function initParticles(){let c=Math.min(Math.floor(canvas.width*canvas.height/16000),90);if(isIOS)c=Math.min(c,40);particles=[];connections=[];for(let i=0;i<c;i++)particles.push(new Particle())}
+function initParticles(){let c=Math.min(Math.floor(canvas.width*canvas.height/22000),60);if(isIOS)c=Math.min(c,30);particles=[];connections=[];for(let i=0;i<c;i++)particles.push(new Particle())}
 function tryNewConnections(){
     if(connections.length>=LGHT_MAX_CONN)return;
     for(let i=0;i<particles.length;i++){
