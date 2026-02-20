@@ -1227,6 +1227,44 @@ const canvas=document.getElementById('neural-bg'),ctx=canvas.getContext('2d');
 let mouseX=-9999,mouseY=-9999,particles=[],connections=[];
 const CONN_DIST=180,CONN_CHANCE=0.003,CONN_DURATION_MIN=60,CONN_DURATION_MAX=180;
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
+const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&'ontouchend' in document);
+const isMobile=isIOS||('ontouchstart' in window&&window.innerWidth<1024);
+const LGHT_LEVELS=isMobile?3:4,LGHT_DISP=0.12,LGHT_REGEN=isMobile?5:3;
+const LGHT_MAX_CONN=isMobile?3:6,LGHT_TENDRIL=isMobile?0:0.15;
+const LGHT_FLICK_SPD=0.35,LGHT_FLICK_AMP=0.25;
+
+function easeInCubic(t){return t*t*t}
+function easeOutCubic(t){return 1-(1-t)*(1-t)*(1-t)}
+function genLightningPts(ax,ay,bx,by,levels,disp){
+    let pts=[{x:ax,y:ay},{x:bx,y:by}];
+    for(let lv=0;lv<levels;lv++){
+        const next=[];
+        for(let i=0;i<pts.length-1;i++){
+            const p1=pts[i],p2=pts[i+1];
+            const dx=p2.x-p1.x,dy=p2.y-p1.y;
+            const len=Math.sqrt(dx*dx+dy*dy)||1;
+            const off=(Math.random()-.5)*disp;
+            next.push(p1,{x:(p1.x+p2.x)/2+(-dy/len)*off,y:(p1.y+p2.y)/2+(dx/len)*off});
+        }
+        next.push(pts[pts.length-1]);pts=next;disp*=.55;
+    }
+    return pts;
+}
+function strokeLightning(pts,color,lw,alpha){
+    if(pts.length<2)return;
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);
+    for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i].x,pts[i].y);
+    ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.globalAlpha=alpha;ctx.stroke();
+}
+function genTendril(pts,idx){
+    if(idx<1||idx>=pts.length-1)return null;
+    const p=pts[idx],prev=pts[idx-1];
+    const dx=p.x-prev.x,dy=p.y-prev.y,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<1)return null;
+    const ang=Math.atan2(dy,dx)+(Math.random()>.5?1:-1)*(Math.PI/4+Math.random()*Math.PI/4);
+    const bLen=len*(1.5+Math.random());
+    return genLightningPts(p.x,p.y,p.x+Math.cos(ang)*bLen,p.y+Math.sin(ang)*bLen,2,bLen*.2);
+}
 
 class Particle{constructor(){this.reset()}
 reset(){
@@ -1269,34 +1307,62 @@ class Connection{constructor(a,b){
     this.a=a;this.b=b;this.life=0;
     this.maxLife=Math.floor(Math.random()*(CONN_DURATION_MAX-CONN_DURATION_MIN))+CONN_DURATION_MIN;
     this.dataPos=0;this.dataDir=Math.random()>.5?1:-1;this.dataSpeed=Math.random()*.02+.01;
-    this.color=Math.random()>.6?'212,168,83':'79,125,245';
+    this.rgb=Math.random()>.6?'rgb(212,168,83)':'rgb(79,125,245)';
+    this.rgbaP=Math.random()>.6?'rgba(212,168,83,':'rgba(79,125,245,';
+    this.pts=[];this.tendrils=[];this.regenC=0;this._regen();
 }
-update(){this.life++;this.dataPos+=this.dataSpeed*this.dataDir;if(this.dataPos>1||this.dataPos<0)this.dataDir*=-1;return this.life<this.maxLife;}
+_regen(){
+    const d=Math.sqrt((this.b.x-this.a.x)**2+(this.b.y-this.a.y)**2);
+    this.pts=genLightningPts(this.a.x,this.a.y,this.b.x,this.b.y,LGHT_LEVELS,d*LGHT_DISP);
+    this.tendrils=[];
+    if(LGHT_TENDRIL>0)for(let i=2;i<this.pts.length-2;i+=2)
+        if(Math.random()<LGHT_TENDRIL){const t=genTendril(this.pts,i);if(t)this.tendrils.push(t);}
+}
+update(){
+    this.life++;this.dataPos+=this.dataSpeed*this.dataDir;
+    if(this.dataPos>1||this.dataPos<0)this.dataDir*=-1;
+    this.regenC++;if(this.regenC>=LGHT_REGEN){this.regenC=0;this._regen();}
+    return this.life<this.maxLife;
+}
 draw(){
     const dx=this.b.x-this.a.x,dy=this.b.y-this.a.y,d=Math.sqrt(dx*dx+dy*dy);
     if(d>CONN_DIST*1.8){this.life=this.maxLife;return;}
-    const progress=this.life/this.maxLife;
-    const fade=progress<.15?progress/.15:progress>.75?(1-progress)/.25:1;
-    const alpha=fade*.25;
-    ctx.beginPath();ctx.moveTo(this.a.x,this.a.y);ctx.lineTo(this.b.x,this.b.y);
-    ctx.strokeStyle=`rgba(${this.color},${alpha})`;ctx.lineWidth=.8;ctx.stroke();
-    const px=this.a.x+dx*this.dataPos,py=this.a.y+dy*this.dataPos;
+    const pr=this.life/this.maxLife;
+    let fade;
+    if(pr<.15)fade=easeInCubic(pr/.15);
+    else if(pr>.75)fade=easeOutCubic((1-pr)/.25);
+    else fade=.75+Math.sin(this.life*LGHT_FLICK_SPD)*LGHT_FLICK_AMP;
+    ctx.save();ctx.lineCap='round';ctx.lineJoin='round';
+    strokeLightning(this.pts,this.rgb,4,fade*.18);
+    strokeLightning(this.pts,this.rgb,2,fade*.35);
+    strokeLightning(this.pts,this.rgb,.7,fade*.9);
+    for(let i=0;i<this.tendrils.length;i++){
+        strokeLightning(this.tendrils[i],this.rgb,1.5,fade*.1);
+        strokeLightning(this.tendrils[i],this.rgb,.5,fade*.4);
+    }
+    ctx.globalAlpha=1;
+    const total=this.pts.length-1;
+    if(total<1){ctx.restore();return;}
+    const segF=Math.max(0,Math.min(this.dataPos,1))*total;
+    const segI=Math.min(Math.floor(segF),total-1),segT=segF-segI;
+    const px=this.pts[segI].x+(this.pts[segI+1].x-this.pts[segI].x)*segT;
+    const py=this.pts[segI].y+(this.pts[segI+1].y-this.pts[segI].y)*segT;
     ctx.beginPath();ctx.arc(px,py,2.5,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${this.color},${fade*.7})`;ctx.fill();
+    ctx.fillStyle=this.rgbaP+(fade*.7)+')';ctx.fill();
     ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${this.color},${fade*.15})`;ctx.fill();
+    ctx.fillStyle=this.rgbaP+(fade*.15)+')';ctx.fill();
+    ctx.restore();
 }}
 
-const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&'ontouchend' in document);
 function initParticles(){let c=Math.min(Math.floor(canvas.width*canvas.height/16000),90);if(isIOS)c=Math.min(c,40);particles=[];connections=[];for(let i=0;i<c;i++)particles.push(new Particle())}
 function tryNewConnections(){
-    if(connections.length>6)return;
+    if(connections.length>=LGHT_MAX_CONN)return;
     for(let i=0;i<particles.length;i++){
         for(let j=i+1;j<particles.length;j++){
             const dx=particles[i].x-particles[j].x,dy=particles[i].y-particles[j].y,d=Math.sqrt(dx*dx+dy*dy);
             if(d<CONN_DIST&&Math.random()<CONN_CHANCE){
                 const exists=connections.some(c=>(c.a===particles[i]&&c.b===particles[j])||(c.a===particles[j]&&c.b===particles[i]));
-                if(!exists){connections.push(new Connection(particles[i],particles[j]));if(connections.length>6)return;}
+                if(!exists){connections.push(new Connection(particles[i],particles[j]));if(connections.length>=LGHT_MAX_CONN)return;}
             }
         }
     }

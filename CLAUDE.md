@@ -12,7 +12,9 @@ C:\Courses\                            # ← корень проекта (git ro
 ├── README.md                          # README проекта
 │
 ├── docs\                              # Сайт, стратегия, методики
-│   ├── index.html                     # Сайт Logic Architecture (single-file SPA, ~1100 строк)
+│   ├── index.html                     # Сайт Logic Architecture (single-file SPA)
+│   ├── logo.jpg                       # Логотип (LA с элементами микросхем)
+│   ├── _headers                       # Security headers для Cloudflare Pages
 │   │
 │   ├── strategy\                      # Стратегия и аналитика
 │   │   ├── marketing_strategy.md      # Маркетинговая стратегия v2.1 (B2C + B2B)
@@ -59,7 +61,7 @@ C:\Courses\                            # ← корень проекта (git ro
 |---|---|---|
 | `home` | `tab-home` | Главная (герой + features) |
 | `services` | `tab-services` | Услуги (6 карточек pkg-grid) |
-| `tech` | `tab-tech` | Технологии (tech-grid + arch) |
+| `tech` | `tab-tech` | Разработчикам (tech-grid + arch) |
 | `business` | `tab-business` | Бизнесу / B2B (biz-grid + biz-why) |
 | `investors` | `tab-investors` | Инвесторам (inv-grid) |
 | `about` | `tab-about` | О нас + DAO-блок |
@@ -89,13 +91,26 @@ C:\Courses\                            # ← корень проекта (git ro
 | `1100px` | Сетки → 2 колонки, навигация уменьшается |
 | `1024px` | Сетки → 1 колонка, flex-блоки → column |
 | `900px` | Мобильное меню (гамбургер), скрытие навигации |
-| `768px` | Минимальные отступы, вертикальная раскладка |
+| `768px` | Компактные grid-карточки, минимальные отступы |
 | `480px` | Ультра-компакт: логотип → "LA", минимальные размеры |
 
-### Модальная форма
+### Мобильный паттерн компактных карточек (≤768px)
+На мобильном все карточки используют единый паттерн:
+```css
+display:grid; grid-template-columns:36px 1fr; gap:0 12px; padding:14px 16px;
+```
+Иконка 36×36 слева (grid-row:1/2 или 1/3), заголовок + текст справа. Применено к:
+- `.feat` (блоки «болей» на главной)
+- `.tcard` (карточки технологий)
+- `.pkg` (карточки услуг — иконка 40px + бейдж)
+- `.join-role` (роли в «Присоединиться»)
+- `.biz-card` — только уменьшены padding/шрифты (без grid, т.к. есть списки)
+
+### Модальное окно контакта
 - Открытие: `openModal()`, закрытие: `closeModal(event)`, Escape
-- Поля: имя, Telegram/телефон, тип работы (select с B2C и B2B опциями), комментарий
-- Select содержит разделитель `<option disabled>— Для бизнеса —</option>`
+- Содержимое: текст-инструкция + кнопка «Написать в Telegram» → `t.me/LogicArchitecture`
+- Класс `.modal--contact`, кнопка `.btn--tg` (градиент Telegram #2AABEE → #229ED9)
+- Все CTA-кнопки на сайте ведут на `openModal()` без аргументов
 
 ## Правовые ограничения (КРИТИЧЕСКИ ВАЖНО)
 
@@ -133,8 +148,9 @@ C:\Courses\                            # ← корень проекта (git ro
 **B2C:** Рефераты от 3к, курсовые от 12к, дипломы от 35к, магистерские от 50к, статьи от 15к, оригинальность от 5к
 **B2B:** Проектная от 25к, техническая от 20к, тестовая от 15к, юридическая от 10к, Pitch Deck от 35к, полный пакет от 80к
 
-### Каналы
-- **Telegram** — основной канал (канал + бот + Telegram Ads)
+### Каналы и контакты
+- **Telegram** — основной канал связи с клиентами: `@LogicArchitecture` (t.me/LogicArchitecture)
+- **Telegram-бот** — получает заявки с формы «Присоединиться» через Worker → Bot API
 - **Авито** — листинг B2C и B2B
 - **SEO** — органический трафик
 - **Habr** — B2B экспертные статьи (с месяца 4)
@@ -153,20 +169,35 @@ C:\Courses\                            # ← корень проекта (git ro
 
 ### Cloudflare Worker (бэкенд форм)
 - **URL:** `https://la-api.ravinski-genlawyer.workers.dev`
-- **Эндпоинты:** `POST /order` (заявка), `POST /join` (присоединение)
+- **Эндпоинты:** `POST /order` (заявка — не используется с сайта, модалка заменена на Telegram-ссылку), `POST /join` (присоединение — активно)
 - **Конфиг:** `worker/wrangler.toml`
 - **Код:** `worker/worker.js`
 - **Secrets:** `TG_TOKEN`, `TG_CHAT_ID` (через `wrangler secret put`)
-- Формы на сайте → Worker → Telegram Bot API → чат основателя
+- Форма «Присоединиться» → Worker → Telegram Bot API → чат основателя
+- CORS: `ALLOWED_ORIGIN = "https://logic-architecture.pages.dev"`
 
 ### Антиспам
 - Honeypot-поле (`data.website`) — бот заполняет, обычный пользователь нет
 - Rate limit через `localStorage` — 1 заявка в 60 секунд
 - Задержка 3 секунды после загрузки страницы
 
-### Инструменты Claude
-- Claude может управлять Cloudflare Dashboard через браузер (Chrome MCP + Windows MCP)
-- Claude может деплоить Worker через `wrangler deploy` (bash)
+### Инструменты Claude (MCP)
+Claude имеет доступ к двум MCP-серверам для управления компьютером и браузером:
+
+- **Chrome MCP** (расширение «Claude in Chrome») — управление браузером Chrome:
+  - Навигация, клики, скриншоты, чтение DOM, выполнение JS
+  - Используется для: проверки сайта после деплоя, управления Cloudflare Dashboard
+  - Команды: `tabs_context_mcp`, `navigate`, `computer`, `read_page`, `find`, `javascript_tool`
+  - **Важно:** всегда начинать с `tabs_context_mcp` для получения tabId
+  - **⚠️ ОБЯЗАТЕЛЬНО использовать Chrome MCP для тестирования сайта** — после любых изменений в `index.html` и деплоя, проверка на продакшне должна выполняться через расширение Claude in Chrome (скриншоты, клики по вкладкам, проверка accordion и т.д.), а НЕ через Windows MCP Snapshot
+- **Windows MCP** — управление Windows-приложениями:
+  - Запуск приложений, клики по координатам, ввод текста, скриншоты
+  - Команды: `Snapshot`, `Click`, `Type`, `Shell`, `App`
+  - Используется как fallback когда Chrome MCP недоступен (НЕ для тестирования сайта)
+- **Деплой Worker:** `wrangler deploy` (bash) из директории `worker/`
+- **Cloudflare API:** Global API Key, аутентификация через `X-Auth-Email` + `X-Auth-Key`
+  - Account ID: `66893112619726c1e0e7a5d1d9149dac`
+  - Email: `ravinski.genlawyer@gmail.com`
 
 ## Конвенции разработки
 
@@ -187,6 +218,8 @@ C:\Courses\                            # ← корень проекта (git ro
 - Использовать прямые слэши (`C:/Courses/docs/`) в bash-командах
 - Пути с кириллицей и пробелами оборачивать в двойные кавычки
 - Не использовать backslash (`\`) в mv/cp/rm командах — приводит к созданию мусорных файлов
+- **Рабочий стол** пользователя: `C:/Users/ravin/OneDrive/Рабочий стол/` (НЕ `C:/Users/ravin/Desktop/`)
+- Установлен **pandoc** для конвертации документов (md → docx и др.)
 
 ### Общие правила
 - Язык интерфейса: **русский**
