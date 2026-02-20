@@ -1,118 +1,289 @@
-# План: Тематические иконки вместо точек в canvas-анимации
+# План: Мультиязычность (i18n) — 4 языка (v2)
 
 ## Контекст
 
-Фоновые частицы в canvas-анимации сейчас — крошечные точки (0.4–2.2px). Нужно:
-1. **Увеличить размер** частиц, чтобы они были заметны
-2. **Заменить точки на тематические иконки** — файлы, шестерёнки, код и т.д., связанные с услугами компании
-3. **Несколько типов иконок** для визуального разнообразия
-4. **Добавить золотой** как третий цвет частиц (15%)
+Сайт Logic Architecture — single-file SPA (`index.html`, 120KB, 1558 строк). Нужно добавить переключение между 4 языками: **русский** (по умолчанию), **английский**, **вьетнамский**, **китайский**.
 
-**Файл:** `C:\Courses\docs\index.html` (строки ~1228-1304, ~1357)
+**Проблема предыдущего подхода:** inline-словарь 260 ключей × 4 языка = ~75-100KB текста. Это удваивает размер файла и невозможно сгенерировать за один проход (превышает лимит токенов). Нужна другая архитектура.
+
+### Уже реализовано (шаги 1-2)
+- CSS переключателя языков (13 правил, `.lang-sw`, `.lang-btn`, `.lang-menu` и т.д.)
+- HTML переключатель в хедере (4 языка: RU, EN, VI, ZH)
+- Responsive правила (900px, 480px)
+- **260 атрибутов `data-i18n`/`data-i18n-html`/`data-i18n-ph`** на всех переводимых элементах
+
+### Осталось реализовать
+- JS-логика i18n (~80 строк в index.html)
+- 3 внешних JSON-файла с переводами (en, vi, zh)
 
 ---
 
-## 1. Новые константы (после строки ~1234)
+## Архитектура: Внешние JSON-файлы (Вариант B)
 
+### Почему не inline-словарь?
+- 260 × 4 языка = ~100KB текста → файл разбухает до 220KB
+- Генерация всего словаря за один проход невозможна (лимит 32K токенов)
+- Нечитаемый код
+
+### Почему внешние JSON?
+- **Нулевая цена для RU-пользователей** (95%+ аудитории): русский текст в DOM, ничего не грузится
+- **Lazy loading**: JSON загружается только при переключении (25KB на язык)
+- **Кэширование**: Cloudflare CDN, после первой загрузки — из кэша мгновенно
+- **Генерация по частям**: каждый JSON — отдельная задача, не превышает лимит токенов
+- **Чистый index.html**: +3KB за JS-логику вместо +100KB за словарь
+
+### Структура файлов
 ```
-ICON_BASE_SIZE  = 6 (desktop) / 5 (mobile)   — базовый радиус в px
-ICON_SIZE_VAR   = 3 (desktop) / 2 (mobile)   — случайная вариация
-ICON_STROKE_W   = 1.2                         — толщина обводки
-ICON_GLOW_EXTRA = 4                           — доп. радиус для ореола
+docs/
+  index.html           # +~3KB (JS-логика i18n)
+  i18n/
+    en.json             # ~25KB — английский
+    vi.json             # ~25KB — вьетнамский
+    zh.json             # ~25KB — китайский (упрощённый)
 ```
+`ru.json` не нужен — русский текст уже в DOM.
 
-Итоговый размер частиц: **6–9px** (desktop), **5–7px** (mobile) — вместо 0.4–2.2px.
-
----
-
-## 2. Шесть иконок (Path2D, нормализованные -1..+1)
-
-| # | Иконка | Форма | Отношение к компании |
-|---|--------|-------|---------------------|
-| 1 | **Документ** | Прямоугольник с загнутым углом | Документация, академические работы |
-| 2 | **Шестерёнка** | Круг с 6 зубцами + отверстие | Разработка, инженерия |
-| 3 | **Код `< >`** | Две угловые скобки | Веб/мобильная разработка |
-| 4 | **Лампочка** | Колба + основание | Консалтинг, стратегия, идеи |
-| 5 | **Графики** | 3 столбца разной высоты + базовая линия | Маркетинговые исследования |
-| 6 | **Лупа** | Круг + диагональная ручка | Исследования, аналитика |
-
-Все иконки — **обводка** (stroke), не заливка. Тонкие контуры выглядят элегантно и не перетягивают внимание.
-
-Реализация: IIFE `buildIconPaths()` создаёт массив `ICON_PATHS[]` из 6 элементов `Path2D`. Создаётся один раз при загрузке.
-
----
-
-## 3. Изменения в `Particle.reset()`
-
-- `this.size` = `Math.random() * ICON_SIZE_VAR + ICON_BASE_SIZE` (6–9px вместо 0.4–2.2)
-- `this.opacity` = `Math.random() * .3 + .1` (0.10–0.40, чуть ниже — крупные иконки должны быть более прозрачными)
-- `this.color` — **три цвета**: 45% синий, 40% фиолетовый, **15% золотой** (`212,168,83`)
-- `this.iconType` = случайный индекс 0–5 из `ICON_PATHS`
-- `this.rotation` = случайный угол поворота (визуальное разнообразие)
-- `this.rotSpeed` = ±0.003 рад/кадр (очень медленное вращение, полный оборот за ~35 сек)
-
----
-
-## 4. Изменения в `Particle.update()`
-
-Одна новая строка: `this.rotation += this.rotSpeed;`
-
----
-
-## 5. Перезапись `Particle.draw()`
-
-```
-1. Ореол — ctx.arc() с радиусом sz + ICON_GLOW_EXTRA, opacity * 0.08
-2. ctx.save()
-3. ctx.translate(x, y) → rotate(rotation) → scale(sz, sz)
-4. ctx.strokeStyle = rgba(color, opacity * pulse)
-5. ctx.lineWidth = ICON_STROKE_W / sz  (компенсация масштаба)
-6. ctx.lineCap = ctx.lineJoin = 'round'
-7. ctx.stroke(ICON_PATHS[iconType])
-8. ctx.restore()
+### Формат JSON
+Плоский объект с dot-notation ключами, совпадающими с `data-i18n` атрибутами:
+```json
+{
+  "nav.home": "Home",
+  "nav.services": "Services",
+  "hero.title": "We design and build<br><span class=\"grad\"><span id=\"typed-target\"></span></span>",
+  "typed.strings": ["digital products", "marketing strategies", "web services", "mobile apps", "technical documentation"],
+  "toast.success": "Application sent! We will contact you through a secure channel"
+}
 ```
 
-Ключевой трюк: `lineWidth = ICON_STROKE_W / sz` — толщина обводки визуально постоянна при любом масштабе/пульсации.
+---
+
+## Шаг 3: JS-логика i18n (добавить в index.html)
+
+**Файл:** `C:\Courses\docs\index.html` — перед `// ===== FORM HELPERS =====` (строка 1521)
+
+### 3.1 Переменные состояния
+```javascript
+let currentLang = 'ru';
+let i18nCache = {};
+let typedInstance = null;
+```
+
+### 3.2 toggleLangMenu()
+```javascript
+function toggleLangMenu() {
+    document.getElementById('langSw').classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+    var sw = document.getElementById('langSw');
+    if (!sw.contains(e.target)) sw.classList.remove('open');
+});
+```
+
+### 3.3 Утилита getI18n()
+```javascript
+function getI18n(key, fallback) {
+    if (currentLang === 'ru') return fallback;
+    var d = i18nCache[currentLang];
+    return (d && d[key]) || fallback;
+}
+```
+
+### 3.4 setLang() — загрузка JSON и применение
+```javascript
+async function setLang(lang) {
+    if (lang === currentLang) {
+        document.getElementById('langSw').classList.remove('open');
+        return;
+    }
+    // Загрузить JSON если не RU и не в кэше
+    if (lang !== 'ru' && !i18nCache[lang]) {
+        try {
+            var res = await fetch('i18n/' + lang + '.json');
+            if (!res.ok) throw new Error();
+            i18nCache[lang] = await res.json();
+        } catch(e) {
+            showToast('Language loading error', 'error');
+            return;
+        }
+    }
+    applyLang(lang);
+}
+```
+
+### 3.5 applyLang() — обновление DOM
+Ключевой паттерн: при первом переключении с RU сохраняем оригинальный текст в `el._i18nOrig`. При возврате на RU — восстанавливаем из `_i18nOrig`.
+
+```javascript
+function applyLang(lang) {
+    var dict = lang === 'ru' ? null : i18nCache[lang];
+    currentLang = lang;
+    localStorage.setItem('la_lang', lang);
+    document.documentElement.lang = lang;
+
+    // data-i18n → textContent
+    document.querySelectorAll('[data-i18n]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n');
+        if (lang === 'ru') {
+            if (el._i18nOrig !== undefined) el.textContent = el._i18nOrig;
+        } else {
+            if (el._i18nOrig === undefined) el._i18nOrig = el.textContent;
+            if (dict[k] !== undefined) el.textContent = dict[k];
+        }
+    });
+
+    // data-i18n-html → innerHTML
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n-html');
+        if (lang === 'ru') {
+            if (el._i18nOrigH !== undefined) el.innerHTML = el._i18nOrigH;
+        } else {
+            if (el._i18nOrigH === undefined) el._i18nOrigH = el.innerHTML;
+            if (dict[k] !== undefined) el.innerHTML = dict[k];
+        }
+    });
+
+    // data-i18n-ph → placeholder
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+        var k = el.getAttribute('data-i18n-ph');
+        if (lang === 'ru') {
+            if (el._i18nOrigP !== undefined) el.placeholder = el._i18nOrigP;
+        } else {
+            if (el._i18nOrigP === undefined) el._i18nOrigP = el.placeholder;
+            if (dict[k] !== undefined) el.placeholder = dict[k];
+        }
+    });
+
+    // Typed.js — ПОСЛЕ innerHTML (hero.title пересоздаёт #typed-target)
+    reinitTyped(lang, dict);
+
+    // UI переключателя
+    document.getElementById('langCurrent').textContent = lang.toUpperCase();
+    document.querySelectorAll('.lang-opt').forEach(function(o) {
+        o.classList.toggle('active', o.dataset.lang === lang);
+    });
+    document.getElementById('langSw').classList.remove('open');
+
+    // Открытые аккордеоны — пересчитать высоту
+    document.querySelectorAll('.svc-item.open .svc-body').forEach(function(b) {
+        b.style.maxHeight = b.scrollHeight + 'px';
+    });
+
+    AOS.refresh();
+}
+```
+
+### 3.6 reinitTyped()
+```javascript
+function reinitTyped(lang, dict) {
+    if (typedInstance) { typedInstance.destroy(); typedInstance = null; }
+    var el = document.getElementById('typed-target');
+    if (!el) return;
+    var strings = (lang === 'ru')
+        ? ['цифровые продукты','маркетинговые стратегии','веб-сервисы','мобильные приложения','техническую документацию']
+        : (dict && dict['typed.strings']) || ['digital products','marketing strategies','web services','mobile apps','technical documentation'];
+    typedInstance = new Typed('#typed-target', {
+        strings: strings, typeSpeed: 70, backSpeed: 40, backDelay: 2000,
+        loop: true, showCursor: true, cursorChar: '|'
+    });
+}
+```
+
+### 3.7 Инициализация (заменяет текущий `new Typed(...)` на строке 1554)
+```javascript
+(function() {
+    var s = localStorage.getItem('la_lang');
+    if (s && s !== 'ru' && ['en','vi','zh'].indexOf(s) !== -1) {
+        setLang(s);
+    } else {
+        typedInstance = new Typed('#typed-target', {
+            strings: ['цифровые продукты','маркетинговые стратегии','веб-сервисы','мобильные приложения','техническую документацию'],
+            typeSpeed: 70, backSpeed: 40, backDelay: 2000,
+            loop: true, showCursor: true, cursorChar: '|'
+        });
+    }
+})();
+```
 
 ---
 
-## 6. Уменьшение кол-ва частиц
+## Шаг 4: Обновить submitJoin()
 
-`initParticles()`: делитель 16000 → **22000**, потолок 90 → **60**, iOS 40 → **30**.
+**Файл:** `C:\Courses\docs\index.html`, строки 1528-1548
 
-Крупные иконки требуют больше пространства. 60 частиц при 6–9px визуально плотнее, чем 90 при 0.4–2.2px.
+Заменить хардкод-строки на `getI18n()`:
+- `'Подождите минуту...'` → `getI18n('toast.ratelimit','Подождите минуту перед повторной отправкой')`
+- `'Укажите контакт...'` → `getI18n('toast.nocontact','Укажите контакт для связи')`
+- `'Отправляем...'` → `getI18n('toast.sending','Отправляем...')`
+- `'Заявка отправлена!'` → `getI18n('toast.success','Заявка отправлена! Мы свяжемся через защищённый канал')`
+- `'Ошибка отправки.'` → `getI18n('toast.error','Ошибка отправки. Напишите нам напрямую в Telegram')`
+- `'Присоединиться'` → `getI18n('join.form.btn','Присоединиться')`
 
 ---
 
-## Что НЕ меняется
+## Шаг 5: Генерация JSON-файлов переводов
 
-- `Particle.update()` (кроме добавления одной строки `rotation`)
-- Класс `Connection` — молнии привязаны к `particle.x/y`, координаты не изменились
-- CSS, HTML, навигация, модалка
-- Молнии и их glow/тендрилы
+Каждый файл генерируется побатчево (4 батча по ~65 ключей), чтобы не превышать лимит токенов:
+
+| Батч | Ключи | ~Количество |
+|------|-------|-------------|
+| 1 | `nav.*`, `hero.*`, `home.*`, `svc.*`, `typed.*`, `toast.*`, `modal.*`, `footer.*` | ~100 |
+| 2 | `stu.*` (студенческая вкладка — самая большая) | ~65 |
+| 3 | `tech.*`, `inv.*`, `abt.*` | ~55 |
+| 4 | `join.*` + финальная сборка/валидация | ~40 |
+
+**Порядок генерации:**
+1. `docs/i18n/en.json` — английский (проще всего валидировать)
+2. `docs/i18n/vi.json` — вьетнамский
+3. `docs/i18n/zh.json` — китайский (упрощённый)
+
+**Правила перевода:**
+- Цены в ₽ — оставить как есть
+- ГОСТ → en: "GOST", vi: "tiêu chuẩn GOST", zh: "GOST标准"
+- Технические термины (NestJS, RAG, etc.) — на английском во всех языках
+- Антиплагиат → en: "plagiarism checker", vi: "phần mềm kiểm tra đạo văn", zh: "反抄袭检测"
+- ВАК/РИНЦ → en: "VAK and RINC", vi/zh: аналогично
+- HTML-ключи: переводить текст, сохранять теги (`<br>`, `<span>`, `<a>`)
+
+---
+
+## Edge cases
+
+1. **hero.title**: `data-i18n-html` содержит `<br><span class="grad"><span id="typed-target"></span></span>`. innerHTML обновляется ПЕРЕД `reinitTyped()`, чтобы `#typed-target` был на месте
+2. **Typed.js cursor**: `destroy()` удаляет старый, `new Typed()` создаёт новый — дублей нет
+3. **Аккордеоны**: после смены языка пересчёт `maxHeight` всех открытых `.svc-item.open`
+4. **AOS**: `AOS.refresh()` после смены языка
+5. **Сетевая ошибка**: если JSON не загрузился — toast с ошибкой, язык не меняется
+6. **FOUC**: при загрузке страницы пользователь с EN кратко видит RU (~50-150ms на CDN), затем JSON подтягивается. Приемлемо для CDN
 
 ---
 
 ## Порядок реализации
 
-1. Добавить константы `ICON_*`
-2. Добавить `ICON_PATHS[]` с 6 Path2D иконками
-3. Модифицировать `Particle.reset()` — размер, прозрачность, цвет, иконка, вращение
-4. Добавить `this.rotation += this.rotSpeed` в `Particle.update()`
-5. Переписать `Particle.draw()` — ореол + stroke(Path2D)
-6. Обновить `initParticles()` — делитель и потолок
+| # | Действие | Файлы | Сложность |
+|---|---|---|---|
+| 1 | ~~CSS переключателя~~ | ~~index.html~~ | ✅ Сделано |
+| 2 | ~~HTML переключателя~~ | ~~index.html~~ | ✅ Сделано |
+| 3 | ~~260 data-i18n атрибутов~~ | ~~index.html~~ | ✅ Сделано |
+| 4 | JS-логика i18n (~80 строк) | index.html | Средняя |
+| 5 | Обновить submitJoin() | index.html | Маленькая |
+| 6 | Заменить Typed.js init на initI18n | index.html | Маленькая |
+| 7 | Генерация `en.json` (4 батча) | docs/i18n/en.json (новый) | Большая |
+| 8 | Генерация `vi.json` (4 батча) | docs/i18n/vi.json (новый) | Большая |
+| 9 | Генерация `zh.json` (4 батча) | docs/i18n/zh.json (новый) | Большая |
+| 10 | Тестирование через Chrome MCP | — | Средняя |
 
 ---
 
 ## Проверка (через Chrome MCP)
 
-1. Открыть сайт → увидеть иконки вместо точек
-2. ✅ Различимы 6 типов иконок (документ, шестерёнка, код, лампочка, графики, лупа)
-3. ✅ Три цвета: синие, фиолетовые, золотые (редкие)
-4. ✅ Пульсация работает (размер иконок плавно меняется)
-5. ✅ Медленное вращение заметно при наблюдении ~10 сек
-6. ✅ Молнии по-прежнему появляются между частицами
-7. ✅ Мышь отталкивает иконки
-8. ✅ Иконки не перетягивают внимание (достаточно прозрачные)
-9. ✅ Ноль ошибок в консоли
-10. ✅ FPS стабильно 58-60
+1. Переключатель языков отображается в хедере (десктоп + мобайл)
+2. Клик EN — ВСЕ тексты меняются на английский на всех 7 вкладках
+3. Клик RU — возврат к русскому (восстановление из `_i18nOrig`)
+4. Typed.js перезапускается с правильными строками
+5. Форма «Присоединиться» — placeholders и labels меняются
+6. Модальное окно — текст переводится
+7. Перезагрузка страницы — язык сохранён (localStorage)
+8. Аккордеоны работают после смены языка
+9. Ноль ошибок в консоли, JSON загружается из `/i18n/en.json`
+10. Мобильная версия (390px) — переключатель виден и работает
+11. VI и ZH — аналогичная проверка

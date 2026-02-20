@@ -350,7 +350,8 @@
             .nav-tab{padding:14px 20px;font-size:15px;border-radius:10px;text-align:center}
             .ham{display:flex !important;order:2}
             .logo{order:1;flex:1}
-            .btn.hcta{order:3;padding:8px 16px;font-size:13px;border-radius:8px}
+            .lang-sw{order:3}
+            .btn.hcta{order:4;padding:8px 16px;font-size:13px;border-radius:8px}
             .mobile-services-link{display:block}
         }
         @media(max-width:768px){
@@ -418,6 +419,8 @@
             .logo-text{display:none}
             .logo-text-short{display:inline}
             .logo{font-size:13px;letter-spacing:1.5px;gap:8px}
+            .lang-btn{padding:5px 8px;font-size:11px}
+            .lang-name{display:none}
             .logo-icon{width:28px;height:28px;min-width:28px}
             .btn.hcta{padding:7px 12px;font-size:12px}
             .nav{top:56px}
@@ -442,6 +445,20 @@
             .modal-overlay{background:rgba(0,0,0,.85)}
             .metrics{background:rgba(13,13,22,.9)}
         }
+
+        /* ===== LANGUAGE SWITCHER ===== */
+        .lang-sw{position:relative;flex-shrink:0;z-index:10002}
+        .lang-btn{display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--brd);color:var(--t1);font-size:12px;font-weight:600;font-family:'Space Grotesk',sans-serif;letter-spacing:1px;cursor:pointer;transition:all .3s}
+        .lang-btn:hover{background:rgba(79,125,245,.1);border-color:var(--brd-a)}
+        .lang-arrow{font-size:10px;color:var(--t3);transition:transform .3s}
+        .lang-sw.open .lang-arrow{transform:rotate(180deg)}
+        .lang-menu{position:absolute;top:calc(100% + 8px);right:0;min-width:140px;background:rgba(13,13,22,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-b);border-radius:12px;padding:6px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .25s cubic-bezier(.4,0,.2,1);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+        .lang-sw.open .lang-menu{opacity:1;visibility:visible;transform:translateY(0)}
+        .lang-opt{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;font-family:'Space Grotesk',sans-serif;color:var(--t2);cursor:pointer;transition:all .2s;letter-spacing:.5px}
+        .lang-opt:hover{background:rgba(255,255,255,.05);color:var(--t1)}
+        .lang-opt.active{color:var(--blue);background:rgba(79,125,245,.08)}
+        .lang-name{font-family:'Inter',sans-serif;font-weight:400;font-size:12px;color:var(--t3)}
+        .lang-opt.active .lang-name{color:var(--blue)}
 
         /* ===== TYPED CURSOR ===== */
         .typed-cursor{color:var(--gold);font-weight:300;animation:cursorPulse 1s ease-in-out infinite}
@@ -478,38 +495,47 @@
     </div>
     <div class="ham" id="ham"><span></span><span></span><span></span></div>
     <nav class="nav" id="nav">
-        <div class="nav-tab active" data-tab="home">Главная</div>
-        <div class="nav-tab" data-tab="services">Услуги</div>
-        <div class="nav-tab" data-tab="students">Студентам</div>
-        <div class="nav-tab" data-tab="tech">Разработчикам</div>
-        <div class="nav-tab" data-tab="investors">Инвесторам</div>
-        <div class="nav-tab" data-tab="about">О нас</div>
-        <div class="nav-tab" data-tab="join">Присоединиться</div>
+        <div class="nav-tab active" data-tab="home" data-i18n="nav.home">Главная</div>
+        <div class="nav-tab" data-tab="services" data-i18n="nav.services">Услуги</div>
+        <div class="nav-tab" data-tab="students" data-i18n="nav.students">Студентам</div>
+        <div class="nav-tab" data-tab="tech" data-i18n="nav.tech">Разработчикам</div>
+        <div class="nav-tab" data-tab="investors" data-i18n="nav.investors">Инвесторам</div>
+        <div class="nav-tab" data-tab="about" data-i18n="nav.about">О нас</div>
+        <div class="nav-tab" data-tab="join" data-i18n="nav.join">Присоединиться</div>
     </nav>
-    <button class="btn btn--gold hcta" onclick="openModal()">Связаться с нами</button>
+    <div class="lang-sw" id="langSw">
+        <button class="lang-btn" onclick="toggleLangMenu()"><span id="langCurrent">RU</span><span class="lang-arrow">▾</span></button>
+        <div class="lang-menu" id="langMenu">
+            <div class="lang-opt active" data-lang="ru" onclick="setLang('ru')">RU <span class="lang-name">Русский</span></div>
+            <div class="lang-opt" data-lang="en" onclick="setLang('en')">EN <span class="lang-name">English</span></div>
+            <div class="lang-opt" data-lang="vi" onclick="setLang('vi')">VI <span class="lang-name">Tiếng Việt</span></div>
+            <div class="lang-opt" data-lang="zh" onclick="setLang('zh')">ZH <span class="lang-name">中文</span></div>
+        </div>
+    </div>
+    <button class="btn btn--gold hcta" onclick="openModal()" data-i18n="nav.cta">Связаться с нами</button>
 </header>
 
 <!-- HERO -->
 <section class="hero">
-    <div class="badge"><span class="badge-dot"></span> Консалтинг · Разработка · Документация</div>
-    <h1>Проектируем и строим<br><span class="grad"><span id="typed-target"></span></span></h1>
-    <p class="sub">Консалтинговая и девелоперская компания с собственным AI-стеком и опытом в банковском секторе. Маркетинговые исследования, разработка продуктов, техническая документация — от идеи до реализации.</p>
+    <div class="badge"><span class="badge-dot"></span> <span data-i18n="hero.badge">Консалтинг · Разработка · Документация</span></div>
+    <h1 data-i18n-html="hero.title">Проектируем и строим<br><span class="grad"><span id="typed-target"></span></span></h1>
+    <p class="sub" data-i18n="hero.sub">Консалтинговая и девелоперская компания с собственным AI-стеком и опытом в банковском секторе. Маркетинговые исследования, разработка продуктов, техническая документация — от идеи до реализации.</p>
     <div class="hero-btns">
-        <button class="btn btn--gold" onclick="openModal()">Обсудить проект</button>
-        <button class="btn btn--outline" onclick="switchTab('services')">Наши услуги</button>
+        <button class="btn btn--gold" onclick="openModal()" data-i18n="hero.btn1">Обсудить проект</button>
+        <button class="btn btn--outline" onclick="switchTab('services')" data-i18n="hero.btn2">Наши услуги</button>
     </div>
     <div class="metrics">
         <div class="metric">
             <div class="metric-val"><span class="a" data-count="10">0</span>+</div>
-            <div class="metric-lbl">лет в enterprise</div>
+            <div class="metric-lbl" data-i18n="hero.m1">лет в enterprise</div>
         </div>
         <div class="metric">
             <div class="metric-val"><span class="a" data-count="50">0</span>+</div>
-            <div class="metric-lbl">реализованных проектов</div>
+            <div class="metric-lbl" data-i18n="hero.m2">реализованных проектов</div>
         </div>
         <div class="metric">
             <div class="metric-val">AI</div>
-            <div class="metric-lbl">собственный стек</div>
+            <div class="metric-lbl" data-i18n="hero.m3">собственный стек</div>
         </div>
     </div>
 </section>
@@ -520,55 +546,55 @@
 <!-- ===== HOME ===== -->
 <div class="tc active" id="tab-home">
     <div class="sh">
-        <div class="label">Почему мы</div>
-        <h2>Технологический подход<br>к бизнес-задачам</h2>
-        <p>Объединяем экспертизу enterprise-архитектуры с современным AI-стеком</p>
+        <div class="label" data-i18n="home.sh.l">Почему мы</div>
+        <h2 data-i18n-html="home.sh.t">Технологический подход<br>к бизнес-задачам</h2>
+        <p data-i18n="home.sh.d">Объединяем экспертизу enterprise-архитектуры с современным AI-стеком</p>
     </div>
 
     <div class="features" data-aos="fade-up">
         <div class="feat">
             <div class="feat-icon">🧠</div>
-            <h3>Собственный AI-стек</h3>
-            <p>Проприетарные инструменты на базе LLM, RAG и векторных баз данных для ускорения исследований и анализа</p>
+            <h3 data-i18n="home.f1.t">Собственный AI-стек</h3>
+            <p data-i18n="home.f1.d">Проприетарные инструменты на базе LLM, RAG и векторных баз данных для ускорения исследований и анализа</p>
         </div>
         <div class="feat">
             <div class="feat-icon">🏦</div>
-            <h3>Enterprise-опыт</h3>
-            <p>Опыт проектирования систем в крупнейших финансовых институтах с миллионами пользователей</p>
+            <h3 data-i18n="home.f2.t">Enterprise-опыт</h3>
+            <p data-i18n="home.f2.d">Опыт проектирования систем в крупнейших финансовых институтах с миллионами пользователей</p>
         </div>
         <div class="feat">
             <div class="feat-icon">🔄</div>
-            <h3>Полный цикл</h3>
-            <p>От маркетингового исследования и стратегии до разработки продукта и запуска в эксплуатацию</p>
+            <h3 data-i18n="home.f3.t">Полный цикл</h3>
+            <p data-i18n="home.f3.d">От маркетингового исследования и стратегии до разработки продукта и запуска в эксплуатацию</p>
         </div>
         <div class="feat">
             <div class="feat-icon">🔒</div>
-            <h3>Безопасность</h3>
-            <p>Инфраструктура уровня финтех-корпораций. Шифрование, VPN-туннели, Zero-Knowledge Architecture</p>
+            <h3 data-i18n="home.f4.t">Безопасность</h3>
+            <p data-i18n="home.f4.d">Инфраструктура уровня финтех-корпораций. Шифрование, VPN-туннели, Zero-Knowledge Architecture</p>
         </div>
         <div class="feat">
             <div class="feat-icon">📋</div>
-            <h3>Документация по стандартам</h3>
-            <p>Проектная и техническая документация по ГОСТ и международным стандартам IEEE, ISO</p>
+            <h3 data-i18n="home.f5.t">Документация по стандартам</h3>
+            <p data-i18n="home.f5.d">Проектная и техническая документация по ГОСТ и международным стандартам IEEE, ISO</p>
         </div>
         <div class="feat">
             <div class="feat-icon">⚡</div>
-            <h3>Гибкость и скорость</h3>
-            <p>Компактная команда с автоматизированными процессами. Быстрее агентства, глубже фриланса</p>
+            <h3 data-i18n="home.f6.t">Гибкость и скорость</h3>
+            <p data-i18n="home.f6.d">Компактная команда с автоматизированными процессами. Быстрее агентства, глубже фриланса</p>
         </div>
     </div>
 
     <div class="mobile-services-link">
-        <a onclick="switchTab('services')">Перейти к услугам →</a>
+        <a onclick="switchTab('services')" data-i18n="home.link">Перейти к услугам →</a>
     </div>
 </div>
 
 <!-- ===== SERVICES ===== -->
 <div class="tc" id="tab-services">
     <div class="sh">
-        <div class="label">Услуги</div>
-        <h2>Комплексные решения для бизнеса</h2>
-        <p>Консалтинг, разработка, документация — полный цикл от идеи до результата</p>
+        <div class="label" data-i18n="svc.sh.l">Услуги</div>
+        <h2 data-i18n="svc.sh.t">Комплексные решения для бизнеса</h2>
+        <p data-i18n="svc.sh.d">Консалтинг, разработка, документация — полный цикл от идеи до результата</p>
     </div>
 
     <div class="svc-list" data-aos="fade-up">
@@ -578,20 +604,20 @@
                 <div class="svc-head-icon">📊</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Research</div>
-                    <h3>Маркетинговые исследования</h3>
+                    <h3 data-i18n="svc.r.t">Маркетинговые исследования</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Глубокий анализ рынка, конкурентов и целевой аудитории с применением AI-инструментов для обработки больших массивов данных.</p>
+                <p data-i18n="svc.r.d">Глубокий анализ рынка, конкурентов и целевой аудитории с применением AI-инструментов для обработки больших массивов данных.</p>
                 <ul>
-                    <li><span class="ck">✓</span> Анализ рынка и конкурентной среды</li>
-                    <li><span class="ck">✓</span> Исследование целевой аудитории и сегментация</li>
-                    <li><span class="ck">✓</span> Анализ потребительского поведения</li>
-                    <li><span class="ck">✓</span> SWOT, PESTEL, Porter's Five Forces</li>
-                    <li><span class="ck">✓</span> Отчёт с рекомендациями и данными</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.r.i1">Анализ рынка и конкурентной среды</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.r.i2">Исследование целевой аудитории и сегментация</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.r.i3">Анализ потребительского поведения</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.r.i4">SWOT, PESTEL, Porter's Five Forces</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.r.i5">Отчёт с рекомендациями и данными</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить исследование</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.r.btn">Обсудить исследование</button>
             </div></div>
         </div>
 
@@ -600,20 +626,20 @@
                 <div class="svc-head-icon">🎯</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Strategy</div>
-                    <h3>Маркетинговая стратегия</h3>
+                    <h3 data-i18n="svc.s.t">Маркетинговая стратегия</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Разработка маркетинговой стратегии с воронкой продаж, контент-планом и финансовыми прогнозами.</p>
+                <p data-i18n="svc.s.d">Разработка маркетинговой стратегии с воронкой продаж, контент-планом и финансовыми прогнозами.</p>
                 <ul>
-                    <li><span class="ck">✓</span> Позиционирование и УТП</li>
-                    <li><span class="ck">✓</span> Маркетинговая воронка (AIDA)</li>
-                    <li><span class="ck">✓</span> Контент-стратегия и SMM-план</li>
-                    <li><span class="ck">✓</span> Медиаплан и бюджетирование</li>
-                    <li><span class="ck">✓</span> KPI и система метрик</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.s.i1">Позиционирование и УТП</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.s.i2">Маркетинговая воронка (AIDA)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.s.i3">Контент-стратегия и SMM-план</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.s.i4">Медиаплан и бюджетирование</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.s.i5">KPI и система метрик</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Заказать стратегию</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.s.btn">Заказать стратегию</button>
             </div></div>
         </div>
 
@@ -622,20 +648,20 @@
                 <div class="svc-head-icon">📢</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Advertising</div>
-                    <h3>Реклама</h3>
+                    <h3 data-i18n="svc.a.t">Реклама</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Настройка и ведение рекламных кампаний в Яндекс Директ, таргетированная реклама в социальных сетях, медийная реклама.</p>
+                <p data-i18n="svc.a.d">Настройка и ведение рекламных кампаний в Яндекс Директ, таргетированная реклама в социальных сетях, медийная реклама.</p>
                 <ul>
-                    <li><span class="ck">✓</span> Контекстная реклама (Яндекс Директ)</li>
-                    <li><span class="ck">✓</span> Таргетированная реклама (VK, Telegram)</li>
-                    <li><span class="ck">✓</span> Создание рекламных креативов</li>
-                    <li><span class="ck">✓</span> A/B тестирование и оптимизация</li>
-                    <li><span class="ck">✓</span> Аналитика и отчётность</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.a.i1">Контекстная реклама (Яндекс Директ)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.a.i2">Таргетированная реклама (VK, Telegram)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.a.i3">Создание рекламных креативов</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.a.i4">A/B тестирование и оптимизация</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.a.i5">Аналитика и отчётность</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить рекламу</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.a.btn">Обсудить рекламу</button>
             </div></div>
         </div>
 
@@ -644,20 +670,20 @@
                 <div class="svc-head-icon">🌐</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Web Development</div>
-                    <h3>Разработка сайтов и веб-сервисов</h3>
+                    <h3 data-i18n="svc.w.t">Разработка сайтов и веб-сервисов</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Проектирование и разработка веб-приложений от лендингов до enterprise SaaS-платформ. Современный стек, адаптивный дизайн, высокая производительность.</p>
+                <p data-i18n="svc.w.d">Проектирование и разработка веб-приложений от лендингов до enterprise SaaS-платформ. Современный стек, адаптивный дизайн, высокая производительность.</p>
                 <ul>
-                    <li><span class="ck">✓</span> Лендинги и корпоративные сайты</li>
-                    <li><span class="ck">✓</span> SPA / PWA веб-приложения</li>
-                    <li><span class="ck">✓</span> SaaS-платформы и личные кабинеты</li>
-                    <li><span class="ck">✓</span> API-интеграции и микросервисы</li>
-                    <li><span class="ck">✓</span> SEO-оптимизация и аналитика</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.w.i1">Лендинги и корпоративные сайты</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.w.i2">SPA / PWA веб-приложения</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.w.i3">SaaS-платформы и личные кабинеты</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.w.i4">API-интеграции и микросервисы</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.w.i5">SEO-оптимизация и аналитика</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить разработку</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.w.btn">Обсудить разработку</button>
             </div></div>
         </div>
 
@@ -666,20 +692,20 @@
                 <div class="svc-head-icon">📱</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Mobile Development</div>
-                    <h3>Разработка мобильных приложений</h3>
+                    <h3 data-i18n="svc.m.t">Разработка мобильных приложений</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Кроссплатформенная и нативная разработка мобильных приложений для iOS и Android.</p>
+                <p data-i18n="svc.m.d">Кроссплатформенная и нативная разработка мобильных приложений для iOS и Android.</p>
                 <ul>
-                    <li><span class="ck">✓</span> React Native / Flutter</li>
-                    <li><span class="ck">✓</span> Нативная разработка (Swift, Kotlin)</li>
-                    <li><span class="ck">✓</span> UI/UX дизайн мобильных интерфейсов</li>
-                    <li><span class="ck">✓</span> Публикация в App Store и Google Play</li>
-                    <li><span class="ck">✓</span> Поддержка и обновления</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.m.i1">React Native / Flutter</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.m.i2">Нативная разработка (Swift, Kotlin)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.m.i3">UI/UX дизайн мобильных интерфейсов</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.m.i4">Публикация в App Store и Google Play</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.m.i5">Поддержка и обновления</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить приложение</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.m.btn">Обсудить приложение</button>
             </div></div>
         </div>
 
@@ -688,20 +714,20 @@
                 <div class="svc-head-icon">📋</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Project Docs</div>
-                    <h3>Проектная документация</h3>
+                    <h3 data-i18n="svc.pd.t">Проектная документация</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Фундамент любого проекта. От концепции и границ до детализированных требований и пользовательских сценариев.</p>
+                <p data-i18n="svc.pd.d">Фундамент любого проекта. От концепции и границ до детализированных требований и пользовательских сценариев.</p>
                 <ul>
-                    <li><span class="ck">✓</span> Vision & Scope</li>
-                    <li><span class="ck">✓</span> BRD (Business Requirements)</li>
-                    <li><span class="ck">✓</span> ТЭО (Технико-экономическое обоснование)</li>
-                    <li><span class="ck">✓</span> SRS (Software Requirements)</li>
-                    <li><span class="ck">✓</span> Use Cases / User Stories</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.pd.i1">Vision & Scope</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.pd.i2">BRD (Business Requirements)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.pd.i3">ТЭО (Технико-экономическое обоснование)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.pd.i4">SRS (Software Requirements)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.pd.i5">Use Cases / User Stories</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить документацию</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.pd.btn">Обсудить документацию</button>
             </div></div>
         </div>
 
@@ -710,21 +736,21 @@
                 <div class="svc-head-icon">⚙️</div>
                 <div class="svc-head-text">
                     <div class="svc-tag">Technical Docs</div>
-                    <h3>Техническая документация</h3>
+                    <h3 data-i18n="svc.td.t">Техническая документация</h3>
                 </div>
                 <span class="svc-arrow">▼</span>
             </div>
             <div class="svc-body"><div class="svc-body-inner">
-                <p>Архитектура, API, базы данных, планы работ. Всё, что нужно команде разработки для эффективной работы.</p>
+                <p data-i18n="svc.td.d">Архитектура, API, базы данных, планы работ. Всё, что нужно команде разработки для эффективной работы.</p>
                 <ul>
-                    <li><span class="ck">✓</span> SAD (Software Architecture Document)</li>
-                    <li><span class="ck">✓</span> API Documentation</li>
-                    <li><span class="ck">✓</span> ER-диаграммы и модели данных</li>
-                    <li><span class="ck">✓</span> WBS / Roadmap</li>
-                    <li><span class="ck">✓</span> QA: Test Plan, Test Cases, Bug Reports</li>
-                    <li><span class="ck">✓</span> User Manual / Admin Guide / FAQ</li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i1">SAD (Software Architecture Document)</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i2">API Documentation</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i3">ER-диаграммы и модели данных</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i4">WBS / Roadmap</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i5">QA: Test Plan, Test Cases, Bug Reports</span></li>
+                    <li><span class="ck">✓</span> <span data-i18n="svc.td.i6">User Manual / Admin Guide / FAQ</span></li>
                 </ul>
-                <button class="btn btn--outline" onclick="openModal()">Обсудить документацию</button>
+                <button class="btn btn--outline" onclick="openModal()" data-i18n="svc.td.btn">Обсудить документацию</button>
             </div></div>
         </div>
 
@@ -733,7 +759,7 @@
                 <div class="svc-head-icon" style="background:linear-gradient(135deg,rgba(74,222,128,.15),rgba(74,222,128,.04))">🎓</div>
                 <div class="svc-head-text">
                     <div class="svc-tag" style="color:var(--green)">Education</div>
-                    <h3>Услуги для студентов</h3>
+                    <h3 data-i18n="svc.edu.t">Услуги для студентов</h3>
                 </div>
                 <span class="svc-arrow" style="transform:rotate(-90deg)">▼</span>
             </div>
@@ -743,14 +769,14 @@
 
     <div class="biz-why" data-aos="fade-up" data-aos-delay="100" style="margin-top:48px">
         <div class="biz-why-content">
-            <h3>Почему Logic Architecture</h3>
-            <p>Мы не просто выполняем задачи — мы проектируем решения как систему, где каждый элемент связан с остальными и решает конкретную бизнес-задачу.</p>
+            <h3 data-i18n="svc.why.t">Почему Logic Architecture</h3>
+            <p data-i18n="svc.why.d">Мы не просто выполняем задачи — мы проектируем решения как систему, где каждый элемент связан с остальными и решает конкретную бизнес-задачу.</p>
             <ul class="biz-why-list">
-                <li><span class="ck">✓</span> Опыт в крупнейших банках — стандарты качества финтех-корпораций</li>
-                <li><span class="ck">✓</span> Собственный AI-стек — скорость без потери глубины</li>
-                <li><span class="ck">✓</span> Соответствие ГОСТ и международным стандартам</li>
-                <li><span class="ck">✓</span> Конфиденциальность на уровне банковских систем</li>
-                <li><span class="ck">✓</span> Полный цикл — от идеи до финального результата</li>
+                <li><span class="ck">✓</span> <span data-i18n="svc.why.i1">Опыт в крупнейших банках — стандарты качества финтех-корпораций</span></li>
+                <li><span class="ck">✓</span> <span data-i18n="svc.why.i2">Собственный AI-стек — скорость без потери глубины</span></li>
+                <li><span class="ck">✓</span> <span data-i18n="svc.why.i3">Соответствие ГОСТ и международным стандартам</span></li>
+                <li><span class="ck">✓</span> <span data-i18n="svc.why.i4">Конфиденциальность на уровне банковских систем</span></li>
+                <li><span class="ck">✓</span> <span data-i18n="svc.why.i5">Полный цикл — от идеи до финального результата</span></li>
             </ul>
         </div>
         <div class="biz-why-visual">
@@ -759,129 +785,129 @@
     </div>
 
     <div class="biz-cta">
-        <button class="btn btn--gold" onclick="openModal()" style="padding:14px 40px;font-size:16px">Обсудить проект</button>
+        <button class="btn btn--gold" onclick="openModal()" style="padding:14px 40px;font-size:16px" data-i18n="svc.cta">Обсудить проект</button>
     </div>
 </div>
 
 <!-- ===== STUDENTS ===== -->
 <div class="tc" id="tab-students">
     <div class="sh">
-        <div class="label">Студентам</div>
-        <h2>Помощь с подготовкой учебных работ</h2>
-        <p>От подбора темы до успешной защиты. Конфиденциально и в срок</p>
+        <div class="label" data-i18n="stu.sh.l">Студентам</div>
+        <h2 data-i18n="stu.sh.t">Помощь с подготовкой учебных работ</h2>
+        <p data-i18n="stu.sh.d">От подбора темы до успешной защиты. Конфиденциально и в срок</p>
     </div>
 
     <div class="biz-hero" data-aos="fade-up" style="background:linear-gradient(135deg,rgba(108,92,231,.04),rgba(79,125,245,.03))">
-        <h3>Знакомая ситуация?</h3>
-        <p>Вы не одиноки — через это проходят тысячи студентов каждый семестр. Мы знаем, с чем вы сталкиваетесь, и знаем, как помочь.</p>
+        <h3 data-i18n="stu.hero.t">Знакомая ситуация?</h3>
+        <p data-i18n="stu.hero.d">Вы не одиноки — через это проходят тысячи студентов каждый семестр. Мы знаем, с чем вы сталкиваетесь, и знаем, как помочь.</p>
     </div>
 
     <div class="features" data-aos="fade-up" data-aos-delay="100">
         <div class="feat">
             <div class="feat-icon">🚫</div>
-            <h3>Антиплагиат не пропускает</h3>
-            <p>Вы написали работу, а система показывает 15%. Знакомо? Поможем подготовить материал, который пройдёт проверку с первого раза</p>
+            <h3 data-i18n="stu.p1.t">Антиплагиат не пропускает</h3>
+            <p data-i18n="stu.p1.d">Вы написали работу, а система показывает 15%. Знакомо? Поможем подготовить материал, который пройдёт проверку с первого раза</p>
         </div>
         <div class="feat">
             <div class="feat-icon">🔄</div>
-            <h3>Преподаватель всё возвращает</h3>
-            <p>Бесконечные замечания, переделки, новые требования. Мы учитываем методичку вашего вуза и требования научного руководителя</p>
+            <h3 data-i18n="stu.p2.t">Преподаватель всё возвращает</h3>
+            <p data-i18n="stu.p2.d">Бесконечные замечания, переделки, новые требования. Мы учитываем методичку вашего вуза и требования научного руководителя</p>
         </div>
         <div class="feat">
             <div class="feat-icon">⏰</div>
-            <h3>Нет времени</h3>
-            <p>Работа, семья, другие предметы — а дедлайн через неделю. Мы поможем разобраться, чтобы вы сосредоточились на том, что важнее</p>
+            <h3 data-i18n="stu.p3.t">Нет времени</h3>
+            <p data-i18n="stu.p3.d">Работа, семья, другие предметы — а дедлайн через неделю. Мы поможем разобраться, чтобы вы сосредоточились на том, что важнее</p>
         </div>
         <div class="feat">
             <div class="feat-icon">😰</div>
-            <h3>Боюсь, что не защитюсь</h3>
-            <p>Сопровождаем до самой защиты. Бесплатные правки по замечаниям. Не бросаем после завершения консультации</p>
+            <h3 data-i18n="stu.p4.t">Боюсь, что не защитюсь</h3>
+            <p data-i18n="stu.p4.d">Сопровождаем до самой защиты. Бесплатные правки по замечаниям. Не бросаем после завершения консультации</p>
         </div>
         <div class="feat">
             <div class="feat-icon">📋</div>
-            <h3>Непонятные требования</h3>
-            <p>ГОСТ, методичка, антиплагиат, оформление — мы разбираемся во всех тонкостях за вас</p>
+            <h3 data-i18n="stu.p5.t">Непонятные требования</h3>
+            <p data-i18n="stu.p5.d">ГОСТ, методичка, антиплагиат, оформление — мы разбираемся во всех тонкостях за вас</p>
         </div>
         <div class="feat">
             <div class="feat-icon">🔒</div>
-            <h3>Переживаю за конфиденциальность</h3>
-            <p>Полная анонимность. Никаких имён, никаких следов. Ваша безопасность — наш приоритет</p>
+            <h3 data-i18n="stu.p6.t">Переживаю за конфиденциальность</h3>
+            <p data-i18n="stu.p6.d">Полная анонимность. Никаких имён, никаких следов. Ваша безопасность — наш приоритет</p>
         </div>
     </div>
 
     <div class="sh" style="margin-top:80px">
-        <div class="label">Услуги</div>
-        <h2>Выберите тип работы</h2>
-        <p>Бесплатно оценим сложность и сроки</p>
+        <div class="label" data-i18n="stu.pkg.l">Услуги</div>
+        <h2 data-i18n="stu.pkg.t">Выберите тип работы</h2>
+        <p data-i18n="stu.pkg.d">Бесплатно оценим сложность и сроки</p>
     </div>
 
     <div class="pkg-grid">
         <div class="pkg">
             <div class="pkg-icon">📝</div>
-            <span class="pkg-badge b1">Быстро</span>
-            <h3>Рефераты и эссе</h3>
-            <p class="desc">Помощь с подготовкой рефератов, эссе, контрольных и докладов</p>
-            <div class="price">от 3 000 ₽</div>
-            <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Узнать стоимость</button>
+            <span class="pkg-badge b1" data-i18n="stu.k1.badge">Быстро</span>
+            <h3 data-i18n="stu.k1.t">Рефераты и эссе</h3>
+            <p class="desc" data-i18n="stu.k1.d">Помощь с подготовкой рефератов, эссе, контрольных и докладов</p>
+            <div class="price" data-i18n="stu.k1.price">от 3 000 ₽</div>
+            <div class="note" data-i18n="stu.k1.note">срок от 1 дня</div>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()" data-i18n="stu.k1.btn">Узнать стоимость</button>
         </div>
         <div class="pkg hot">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">📘</div>
-            <span class="pkg-badge b2">Популярное</span>
-            <h3>Курсовые работы</h3>
-            <p class="desc">Помощь с курсовыми по любому направлению. Учтём методичку и требования преподавателя</p>
-            <div class="price">от 12 000 ₽</div>
-            <div class="note">срок от 3 дней</div>
-            <button class="btn btn--blue" style="width:100%" onclick="openModal()">Рассчитать стоимость</button>
+            <span class="pkg-badge b2" data-i18n="stu.k2.badge">Популярное</span>
+            <h3 data-i18n="stu.k2.t">Курсовые работы</h3>
+            <p class="desc" data-i18n="stu.k2.d">Помощь с курсовыми по любому направлению. Учтём методичку и требования преподавателя</p>
+            <div class="price" data-i18n="stu.k2.price">от 12 000 ₽</div>
+            <div class="note" data-i18n="stu.k2.note">срок от 3 дней</div>
+            <button class="btn btn--blue" style="width:100%" onclick="openModal()" data-i18n="stu.k2.btn">Рассчитать стоимость</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(212,168,83,.15),rgba(212,168,83,.04))">🎓</div>
-            <span class="pkg-badge b3">Полный цикл</span>
-            <h3>Дипломные и ВКР</h3>
-            <p class="desc">Полное сопровождение — от выбора темы до подготовки к защите. Презентация и речь в подарок</p>
-            <div class="price">от 35 000 ₽</div>
-            <div class="note">срок от 7 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Обсудить проект</button>
+            <span class="pkg-badge b3" data-i18n="stu.k3.badge">Полный цикл</span>
+            <h3 data-i18n="stu.k3.t">Дипломные и ВКР</h3>
+            <p class="desc" data-i18n="stu.k3.d">Полное сопровождение — от выбора темы до подготовки к защите. Презентация и речь в подарок</p>
+            <div class="price" data-i18n="stu.k3.price">от 35 000 ₽</div>
+            <div class="note" data-i18n="stu.k3.note">срок от 7 дней</div>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()" data-i18n="stu.k3.btn">Обсудить проект</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(108,92,231,.04))">🔬</div>
-            <span class="pkg-badge b2">Для магистров</span>
-            <h3>Магистерские диссертации</h3>
-            <p class="desc">Глубокая проработка для магистрантов. Актуальные источники, научная новизна, полное оформление</p>
-            <div class="price">от 50 000 ₽</div>
-            <div class="note">срок от 14 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Получить консультацию</button>
+            <span class="pkg-badge b2" data-i18n="stu.k4.badge">Для магистров</span>
+            <h3 data-i18n="stu.k4.t">Магистерские диссертации</h3>
+            <p class="desc" data-i18n="stu.k4.d">Глубокая проработка для магистрантов. Актуальные источники, научная новизна, полное оформление</p>
+            <div class="price" data-i18n="stu.k4.price">от 50 000 ₽</div>
+            <div class="note" data-i18n="stu.k4.note">срок от 14 дней</div>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()" data-i18n="stu.k4.btn">Получить консультацию</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon">📄</div>
-            <span class="pkg-badge b1">Наука</span>
-            <h3>Научные статьи</h3>
-            <p class="desc">Помощь с подготовкой статей для ВАК и РИНЦ. Подбор журнала, оформление по требованиям</p>
-            <div class="price">от 15 000 ₽</div>
-            <div class="note">срок от 5 дней</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Запросить оценку</button>
+            <span class="pkg-badge b1" data-i18n="stu.k5.badge">Наука</span>
+            <h3 data-i18n="stu.k5.t">Научные статьи</h3>
+            <p class="desc" data-i18n="stu.k5.d">Помощь с подготовкой статей для ВАК и РИНЦ. Подбор журнала, оформление по требованиям</p>
+            <div class="price" data-i18n="stu.k5.price">от 15 000 ₽</div>
+            <div class="note" data-i18n="stu.k5.note">срок от 5 дней</div>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()" data-i18n="stu.k5.btn">Запросить оценку</button>
         </div>
         <div class="pkg">
             <div class="pkg-icon" style="background:linear-gradient(135deg,rgba(74,222,128,.15),rgba(74,222,128,.04))">✨</div>
-            <span class="pkg-badge" style="background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)">Новое</span>
-            <h3>Повышение оригинальности</h3>
-            <p class="desc">Уже написали работу, но антиплагиат не пропускает? Поможем повысить оригинальность без потери смысла</p>
-            <div class="price">от 5 000 ₽</div>
-            <div class="note">срок от 1 дня</div>
-            <button class="btn btn--outline" style="width:100%" onclick="openModal()">Отправить работу на оценку</button>
+            <span class="pkg-badge" style="background:rgba(74,222,128,.1);color:var(--green);border:1px solid rgba(74,222,128,.2)" data-i18n="stu.k6.badge">Новое</span>
+            <h3 data-i18n="stu.k6.t">Повышение оригинальности</h3>
+            <p class="desc" data-i18n="stu.k6.d">Уже написали работу, но антиплагиат не пропускает? Поможем повысить оригинальность без потери смысла</p>
+            <div class="price" data-i18n="stu.k6.price">от 5 000 ₽</div>
+            <div class="note" data-i18n="stu.k6.note">срок от 1 дня</div>
+            <button class="btn btn--outline" style="width:100%" onclick="openModal()" data-i18n="stu.k6.btn">Отправить работу на оценку</button>
         </div>
     </div>
 
     <div class="incl" data-aos="fade-up" data-aos-delay="100">
-        <h4>🛡️ Включено в каждый проект</h4>
+        <h4 data-i18n-html="stu.incl.t">🛡️ Включено в каждый проект</h4>
         <div class="incl-grid">
-            <div class="incl-item"><span class="ck">✓</span> Консультация по теме и структуре</div>
-            <div class="incl-item"><span class="ck">✓</span> Подбор актуальных источников 2025–2026</div>
-            <div class="incl-item"><span class="ck">✓</span> Оформление по ГОСТу и требованиям вашего вуза</div>
-            <div class="incl-item"><span class="ck">✓</span> Проверка оригинальности (Антиплагиат)</div>
-            <div class="incl-item"><span class="ck">✓</span> Отчёт о проверке</div>
-            <div class="incl-item"><span class="ck">✓</span> Правки по замечаниям преподавателя</div>
-            <div class="incl-item"><span class="ck">✓</span> Сопровождение до защиты</div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i1">Консультация по теме и структуре</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i2">Подбор актуальных источников 2025–2026</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i3">Оформление по ГОСТу и требованиям вашего вуза</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i4">Проверка оригинальности (Антиплагиат)</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i5">Отчёт о проверке</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i6">Правки по замечаниям преподавателя</span></div>
+            <div class="incl-item"><span class="ck">✓</span> <span data-i18n="stu.incl.i7">Сопровождение до защиты</span></div>
         </div>
     </div>
 </div>
@@ -889,9 +915,9 @@
 <!-- ===== TECH ===== -->
 <div class="tc" id="tab-tech">
     <div class="sh">
-        <div class="label">Разработчикам</div>
-        <h2>Проприетарный технологический стек</h2>
-        <p>Собственная разработка, объединяющая лучшие инструменты в единую экосистему</p>
+        <div class="label" data-i18n="tech.sh.l">Разработчикам</div>
+        <h2 data-i18n="tech.sh.t">Проприетарный технологический стек</h2>
+        <p data-i18n="tech.sh.d">Собственная разработка, объединяющая лучшие инструменты в единую экосистему</p>
     </div>
 
     <div class="tech-grid" data-aos="fade-up">
@@ -899,44 +925,44 @@
             <div class="tcard-icon">🧠</div>
             <div class="tcard-tag">AI Engine</div>
             <h3>Large Language Models</h3>
-            <p>Передовые open-source модели для рутинных задач. Самые мощные коммерческие модели для стратегического планирования, глубокого анализа и научного синтеза</p>
+            <p data-i18n="tech.c1.d">Передовые open-source модели для рутинных задач. Самые мощные коммерческие модели для стратегического планирования, глубокого анализа и научного синтеза</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">📚</div>
             <div class="tcard-tag">Knowledge Base</div>
             <h3>RAG + Obsidian</h3>
-            <p>Retrieval-Augmented Generation на собственной базе знаний. Obsidian как граф-хранилище с перелинковкой тысяч научных источников и методик</p>
+            <p data-i18n="tech.c2.d">Retrieval-Augmented Generation на собственной базе знаний. Obsidian как граф-хранилище с перелинковкой тысяч научных источников и методик</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">🔍</div>
             <div class="tcard-tag">Search Layer</div>
             <h3>AnythingLLM + Embeddings</h3>
-            <p>Семантический поиск по корпусу документов через векторные эмбеддинги. Мгновенное нахождение релевантных источников из миллионов фрагментов</p>
+            <p data-i18n="tech.c3.d">Семантический поиск по корпусу документов через векторные эмбеддинги. Мгновенное нахождение релевантных источников из миллионов фрагментов</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">⚡</div>
             <div class="tcard-tag">Backend</div>
             <h3>NestJS + PostgreSQL</h3>
-            <p>Enterprise-grade backend на NestJS с TypeScript. PostgreSQL для реляционных данных, Vector DB для семантических запросов, Redis 7 для кэширования</p>
+            <p data-i18n="tech.c4.d">Enterprise-grade backend на NestJS с TypeScript. PostgreSQL для реляционных данных, Vector DB для семантических запросов, Redis 7 для кэширования</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">🔎</div>
             <div class="tcard-tag">Infrastructure</div>
             <h3>Meilisearch + MinIO</h3>
-            <p>Молниеносный полнотекстовый поиск через Meilisearch. S3-совместимое объектное хранилище MinIO для безопасного хранения документов</p>
+            <p data-i18n="tech.c5.d">Молниеносный полнотекстовый поиск через Meilisearch. S3-совместимое объектное хранилище MinIO для безопасного хранения документов</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">💬</div>
             <div class="tcard-tag">Communications</div>
             <h3>P2P Encrypted Messaging</h3>
-            <p>Общение между специалистами по peer-to-peer протоколу со сквозным шифрованием. Без серверов-посредников. Ваши данные не покидают защищённый контур</p>
+            <p data-i18n="tech.c6.d">Общение между специалистами по peer-to-peer протоколу со сквозным шифрованием. Без серверов-посредников. Ваши данные не покидают защищённый контур</p>
         </div>
     </div>
 
     <div class="tech-arch" data-aos="fade-up" data-aos-delay="100">
         <div class="tech-arch-content">
-            <h3>Единая экосистема собственной разработки</h3>
-            <p>Мы не используем готовые платформы. Наша команда спроектировала и построила систему с нуля, объединив лучший технологический стек 2026 года в единый программный комплекс. Каждый компонент подобран и интегрирован для максимальной производительности и безопасности.</p>
+            <h3 data-i18n="tech.arch.t">Единая экосистема собственной разработки</h3>
+            <p data-i18n="tech.arch.d">Мы не используем готовые платформы. Наша команда спроектировала и построила систему с нуля, объединив лучший технологический стек 2026 года в единый программный комплекс. Каждый компонент подобран и интегрирован для максимальной производительности и безопасности.</p>
             <div class="stack-bar">
                 <span class="stack-tag">NestJS</span>
                 <span class="stack-tag">PostgreSQL</span>
@@ -956,8 +982,8 @@
     </div>
 
     <div class="sec-block" data-aos="fade-up" data-aos-delay="200">
-        <h3>🔐 Безопасность на уровне финтех-корпораций</h3>
-        <p>Инфраструктура построена по стандартам банковской безопасности. Весь трафик проходит через зашифрованные VPN-туннели. Коммуникации между узлами защищены протоколами корпоративного уровня, обеспечивающими максимальную защиту данных.</p>
+        <h3 data-i18n-html="tech.sec.t">🔐 Безопасность на уровне финтех-корпораций</h3>
+        <p data-i18n="tech.sec.d">Инфраструктура построена по стандартам банковской безопасности. Весь трафик проходит через зашифрованные VPN-туннели. Коммуникации между узлами защищены протоколами корпоративного уровня, обеспечивающими максимальную защиту данных.</p>
         <div class="sec-tags">
             <span class="sec-tag">WireGuard VPN</span>
             <span class="sec-tag">VLESS + Reality</span>
@@ -971,48 +997,48 @@
 <!-- ===== INVESTORS ===== -->
 <div class="tc" id="tab-investors">
     <div class="sh">
-        <div class="label">Инвесторам</div>
-        <h2>Ищем партнёров для масштабирования</h2>
-        <p>Проверенная технология, растущий рынок, амбициозные планы</p>
+        <div class="label" data-i18n="inv.sh.l">Инвесторам</div>
+        <h2 data-i18n="inv.sh.t">Ищем партнёров для масштабирования</h2>
+        <p data-i18n="inv.sh.d">Проверенная технология, растущий рынок, амбициозные планы</p>
     </div>
 
     <div class="inv-hero" data-aos="fade-up">
-        <h3>От образовательного консалтинга к международным рынкам</h3>
-        <p>Logic Architecture — это не просто сервис. Это технологическая платформа с проприетарным AI-стеком, готовая к масштабированию на смежные рынки: техническая документация, подготовка заявок в международные акселераторы, разработка собственных IT-продуктов.</p>
+        <h3 data-i18n="inv.hero.t">От образовательного консалтинга к международным рынкам</h3>
+        <p data-i18n="inv.hero.d">Logic Architecture — это не просто сервис. Это технологическая платформа с проприетарным AI-стеком, готовая к масштабированию на смежные рынки: техническая документация, подготовка заявок в международные акселераторы, разработка собственных IT-продуктов.</p>
     </div>
 
     <div class="inv-grid" data-aos="fade-up" data-aos-delay="100">
         <div class="inv-card">
-            <h4>🚀 Стратегия роста</h4>
-            <p>Мы планируем выход на рынок профессиональной документации для участия в международных акселераторах и грантовых программах. Наша технология позволяет готовить документацию уровня, который принимают ведущие фонды.</p>
+            <h4 data-i18n-html="inv.c1.t">🚀 Стратегия роста</h4>
+            <p data-i18n="inv.c1.d">Мы планируем выход на рынок профессиональной документации для участия в международных акселераторах и грантовых программах. Наша технология позволяет готовить документацию уровня, который принимают ведущие фонды.</p>
         </div>
         <div class="inv-card">
-            <h4>💡 Собственные IT-проекты</h4>
-            <p>Разрабатываем линейку SaaS-продуктов на базе нашего AI-стека: от автоматизации документооборота до интеллектуальных систем для бизнес-аналитики. Каждый продукт — отдельная единица монетизации.</p>
+            <h4 data-i18n-html="inv.c2.t">💡 Собственные IT-проекты</h4>
+            <p data-i18n="inv.c2.d">Разрабатываем линейку SaaS-продуктов на базе нашего AI-стека: от автоматизации документооборота до интеллектуальных систем для бизнес-аналитики. Каждый продукт — отдельная единица монетизации.</p>
         </div>
         <div class="inv-card">
-            <h4>👥 Расширение команды</h4>
+            <h4 data-i18n-html="inv.c3.t">👥 Расширение команды</h4>
             <ul>
-                <li>🧠 AI/ML инженеры для развития RAG-системы</li>
-                <li>⚡ Backend-разработчики (NestJS, Go)</li>
-                <li>📊 Продуктовые аналитики и менеджеры</li>
-                <li>🌍 Международные партнёры и эксперты</li>
+                <li data-i18n-html="inv.c3.i1">🧠 AI/ML инженеры для развития RAG-системы</li>
+                <li data-i18n-html="inv.c3.i2">⚡ Backend-разработчики (NestJS, Go)</li>
+                <li data-i18n-html="inv.c3.i3">📊 Продуктовые аналитики и менеджеры</li>
+                <li data-i18n-html="inv.c3.i4">🌍 Международные партнёры и эксперты</li>
             </ul>
         </div>
         <div class="inv-card">
-            <h4>📈 Куда пойдут инвестиции</h4>
+            <h4 data-i18n-html="inv.c4.t">📈 Куда пойдут инвестиции</h4>
             <ul>
-                <li>🏗️ Развитие проприетарной AI-платформы</li>
-                <li>🌐 Выход на международные рынки (SEA, EU)</li>
-                <li>📝 Подготовка к международным акселераторам</li>
-                <li>👥 Наём ключевых специалистов</li>
+                <li data-i18n-html="inv.c4.i1">🏗️ Развитие проприетарной AI-платформы</li>
+                <li data-i18n-html="inv.c4.i2">🌐 Выход на международные рынки (SEA, EU)</li>
+                <li data-i18n-html="inv.c4.i3">📝 Подготовка к международным акселераторам</li>
+                <li data-i18n-html="inv.c4.i4">👥 Наём ключевых специалистов</li>
             </ul>
         </div>
     </div>
 
     <div class="inv-cta">
         <button class="btn btn--gold" onclick="openModal()" style="padding:14px 40px;font-size:16px">
-            Обсудить партнёрство
+            <span data-i18n="inv.cta">Обсудить партнёрство</span>
         </button>
     </div>
 </div>
@@ -1020,17 +1046,17 @@
 <!-- ===== ABOUT ===== -->
 <div class="tc" id="tab-about">
     <div class="sh">
-        <div class="label">О нас</div>
-        <h2>Основатель и организация</h2>
-        <p>От банковской карьеры к глобальному децентрализованному сообществу учёных и разработчиков</p>
+        <div class="label" data-i18n="abt.sh.l">О нас</div>
+        <h2 data-i18n="abt.sh.t">Основатель и организация</h2>
+        <p data-i18n="abt.sh.d">От банковской карьеры к глобальному децентрализованному сообществу учёных и разработчиков</p>
     </div>
 
     <div class="about-main" data-aos="fade-up">
         <div class="about-photo"><img src="founder.jpg" alt="Основатель Logic Architecture" width="220" height="220" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:center center;display:block"></div>
         <div class="about-info">
-            <h3>Founder & Architect</h3>
-            <div class="about-role">Ex-Head of Systems Analysis · Крупнейшие банки РФ</div>
-            <p class="about-bio">
+            <h3 data-i18n="abt.name">Founder & Architect</h3>
+            <div class="about-role" data-i18n="abt.role">Ex-Head of Systems Analysis · Крупнейшие банки РФ</div>
+            <p class="about-bio" data-i18n="abt.bio">
                 Построил блестящую карьеру в двух крупнейших банках страны, управляя системами, обрабатывающими триллионы. Руководил отделами системного анализа, проектировал архитектуру критически важных финансовых платформ. Но корпоративная бюрократия не давала пространства для настоящих инноваций.
             </p>
             <div class="about-markers">
@@ -1048,29 +1074,29 @@
         <div class="tl-item">
             <div class="tl-dot">🏦</div>
             <div class="tl-content">
-                <h4>Банковская карьера</h4>
-                <p>Годы в крупнейших финансовых институтах страны. Руководство системным анализом, проектирование архитектуры платформ с миллионами пользователей. Опыт, где цена ошибки измеряется миллиардами.</p>
+                <h4 data-i18n="abt.tl1.t">Банковская карьера</h4>
+                <p data-i18n="abt.tl1.d">Годы в крупнейших финансовых институтах страны. Руководство системным анализом, проектирование архитектуры платформ с миллионами пользователей. Опыт, где цена ошибки измеряется миллиардами.</p>
             </div>
         </div>
         <div class="tl-item">
             <div class="tl-dot">💻</div>
             <div class="tl-content">
-                <h4>Open Source и исследования</h4>
-                <p>Долгое время исследовал и участвовал в open-source проектах на GitHub и Hugging Face. Изучал передовые модели машинного обучения, экспериментировал с RAG-архитектурами и LLM-оркестрацией.</p>
+                <h4 data-i18n="abt.tl2.t">Open Source и исследования</h4>
+                <p data-i18n="abt.tl2.d">Долгое время исследовал и участвовал в open-source проектах на GitHub и Hugging Face. Изучал передовые модели машинного обучения, экспериментировал с RAG-архитектурами и LLM-оркестрацией.</p>
             </div>
         </div>
         <div class="tl-item">
             <div class="tl-dot">✈️</div>
             <div class="tl-content">
-                <h4>Путешествия и глобальный опыт</h4>
-                <p>Путешествовал по миру с фокусом на Юго-Восточную Азию — современный центр свободных разработчиков и цифровых кочевников. Получил невероятный опыт общения с передовыми международными профессионалами из самых разных стран.</p>
+                <h4 data-i18n="abt.tl3.t">Путешествия и глобальный опыт</h4>
+                <p data-i18n="abt.tl3.d">Путешествовал по миру с фокусом на Юго-Восточную Азию — современный центр свободных разработчиков и цифровых кочевников. Получил невероятный опыт общения с передовыми международными профессионалами из самых разных стран.</p>
             </div>
         </div>
         <div class="tl-item">
             <div class="tl-dot">🚀</div>
             <div class="tl-content">
-                <h4>Основание Logic Architecture</h4>
-                <p>Создал собственные проекты, объединив банковский опыт, знание AI и международные связи. Самый большой интерес — помогать людям, избавлять их от лишней боли и проблем, делать их жизнь проще и лучше.</p>
+                <h4 data-i18n="abt.tl4.t">Основание Logic Architecture</h4>
+                <p data-i18n="abt.tl4.d">Создал собственные проекты, объединив банковский опыт, знание AI и международные связи. Самый большой интерес — помогать людям, избавлять их от лишней боли и проблем, делать их жизнь проще и лучше.</p>
             </div>
         </div>
     </div>
@@ -1081,74 +1107,74 @@
             <div class="dao-icon-wrap"><span>🌐</span></div>
             <div>
                 <h3>Decentralized Autonomous Organization</h3>
-                <div class="dao-sub">Распределённая по всему миру структура нового типа</div>
+                <div class="dao-sub" data-i18n="abt.dao.sub">Распределённая по всему миру структура нового типа</div>
             </div>
         </div>
-        <p class="dao-desc">
+        <p class="dao-desc" data-i18n="abt.dao.d">
             Сегодня Logic Architecture — это децентрализованная организация, работающая по принципу DAO. Мы объединяем учёных, исследователей и разработчиков из разных стран мира в единую сеть, цель которой — продвижение науки и технологий, делая их по-настоящему доступными для каждого.
         </p>
         <div class="dao-grid">
             <div class="dao-card">
                 <div class="dao-card-icon">🔗</div>
                 <h4>Distributed Network</h4>
-                <p>Участники работают из разных точек мира. Нет центрального офиса, нет корпоративной иерархии — только общие цели и горизонтальные связи между профессионалами.</p>
+                <p data-i18n="abt.dao.c1">Участники работают из разных точек мира. Нет центрального офиса, нет корпоративной иерархии — только общие цели и горизонтальные связи между профессионалами.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🛡️</div>
                 <h4>Privacy & Security</h4>
-                <p>Максимальная анонимность и безопасность каждого участника. Сквозное шифрование, P2P-коммуникации, никаких реальных данных в открытом доступе.</p>
+                <p data-i18n="abt.dao.c2">Максимальная анонимность и безопасность каждого участника. Сквозное шифрование, P2P-коммуникации, никаких реальных данных в открытом доступе.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🧬</div>
                 <h4>Collaborative Science</h4>
-                <p>Участники помогают текущим проектам в соответствии со своей квалификацией и интересами: от научных исследований до разработки инфраструктуры.</p>
+                <p data-i18n="abt.dao.c3">Участники помогают текущим проектам в соответствии со своей квалификацией и интересами: от научных исследований до разработки инфраструктуры.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🤝</div>
                 <h4>Open Community</h4>
-                <p>Мы ищем не только сеньоров-разработчиков и докторов наук — мы приглашаем всех, кому близки наши цели и идеи. Важна мотивация, а не формальный статус.</p>
+                <p data-i18n="abt.dao.c4">Мы ищем не только сеньоров-разработчиков и докторов наук — мы приглашаем всех, кому близки наши цели и идеи. Важна мотивация, а не формальный статус.</p>
             </div>
         </div>
         <div class="dao-cta">
-            <button class="btn btn--blue" onclick="switchTab('join')">Присоединиться к сообществу</button>
+            <button class="btn btn--blue" onclick="switchTab('join')" data-i18n="abt.dao.btn">Присоединиться к сообществу</button>
         </div>
     </div>
 
     <div class="quote-block" data-aos="fade-up" data-aos-delay="100">
         <div class="icon">💎</div>
-        <p>Я создал Logic Architecture не ради прибыли, а ради идеи: что передовые технологии должны работать на людей, а не против них. Каждый человек заслуживает инструменты, которые раньше были доступны только корпорациям.</p>
-        <div class="sig">— Founder & Architect</div>
+        <p data-i18n="abt.quote">Я создал Logic Architecture не ради прибыли, а ради идеи: что передовые технологии должны работать на людей, а не против них. Каждый человек заслуживает инструменты, которые раньше были доступны только корпорациям.</p>
+        <div class="sig" data-i18n="abt.sig">— Founder & Architect</div>
     </div>
 </div>
 
 <!-- ===== JOIN ===== -->
 <div class="tc" id="tab-join">
     <div class="sh">
-        <div class="label">Присоединиться</div>
-        <h2>Стань частью глобальной сети</h2>
-        <p>Мы привлекаем учёных и разработчиков из разных сфер для совместного продвижения науки и технологий</p>
+        <div class="label" data-i18n="join.sh.l">Присоединиться</div>
+        <h2 data-i18n="join.sh.t">Стань частью глобальной сети</h2>
+        <p data-i18n="join.sh.d">Мы привлекаем учёных и разработчиков из разных сфер для совместного продвижения науки и технологий</p>
     </div>
 
     <div class="join-hero" data-aos="fade-up">
-        <h3>Децентрализованное сообщество без границ</h3>
-        <p>Logic Architecture объединяет людей из разных стран и дисциплин. У нас нет формальных барьеров: не важно, вы PhD-исследователь, junior-разработчик или студент с горящими глазами. Если наши цели вам близки — вы уже один из нас.</p>
+        <h3 data-i18n="join.hero.t">Децентрализованное сообщество без границ</h3>
+        <p data-i18n="join.hero.d">Logic Architecture объединяет людей из разных стран и дисциплин. У нас нет формальных барьеров: не важно, вы PhD-исследователь, junior-разработчик или студент с горящими глазами. Если наши цели вам близки — вы уже один из нас.</p>
     </div>
 
     <div class="join-roles" data-aos="fade-up" data-aos-delay="100">
         <div class="join-role">
             <div class="join-role-icon">🔬</div>
-            <h4>Учёные и исследователи</h4>
-            <p>Специалисты в любой научной области: от гуманитарных до технических дисциплин. Помощь в методологии, рецензировании и научном синтезе</p>
+            <h4 data-i18n="join.r1.t">Учёные и исследователи</h4>
+            <p data-i18n="join.r1.d">Специалисты в любой научной области: от гуманитарных до технических дисциплин. Помощь в методологии, рецензировании и научном синтезе</p>
         </div>
         <div class="join-role">
             <div class="join-role-icon">💻</div>
-            <h4>Разработчики</h4>
-            <p>Backend, Frontend, AI/ML, DevOps — любой стек и уровень. Работа над реальными продуктами с передовым технологическим стеком</p>
+            <h4 data-i18n="join.r2.t">Разработчики</h4>
+            <p data-i18n="join.r2.d">Backend, Frontend, AI/ML, DevOps — любой стек и уровень. Работа над реальными продуктами с передовым технологическим стеком</p>
         </div>
         <div class="join-role">
             <div class="join-role-icon">🌱</div>
-            <h4>Энтузиасты</h4>
-            <p>Не обязательно быть экспертом. Если вам близки идеи открытой науки и доступных технологий — найдётся задача по силам и интересам</p>
+            <h4 data-i18n="join.r3.t">Энтузиасты</h4>
+            <p data-i18n="join.r3.d">Не обязательно быть экспертом. Если вам близки идеи открытой науки и доступных технологий — найдётся задача по силам и интересам</p>
         </div>
     </div>
 
@@ -1156,43 +1182,43 @@
         <div class="join-value">
             <div class="join-value-icon">🌍</div>
             <div>
-                <h5>Работа из любой точки мира</h5>
-                <p>Полностью распределённая структура. Часовые пояса и география не имеют значения</p>
+                <h5 data-i18n="join.v1.t">Работа из любой точки мира</h5>
+                <p data-i18n="join.v1.d">Полностью распределённая структура. Часовые пояса и география не имеют значения</p>
             </div>
         </div>
         <div class="join-value">
             <div class="join-value-icon">🔒</div>
             <div>
-                <h5>Полная анонимность</h5>
-                <p>Сквозное шифрование, никаких реальных имён. Ваша безопасность гарантирована</p>
+                <h5 data-i18n="join.v2.t">Полная анонимность</h5>
+                <p data-i18n="join.v2.d">Сквозное шифрование, никаких реальных имён. Ваша безопасность гарантирована</p>
             </div>
         </div>
         <div class="join-value">
             <div class="join-value-icon">📈</div>
             <div>
-                <h5>Профессиональный рост</h5>
-                <p>Работа с передовыми технологиями и общение с международными специалистами</p>
+                <h5 data-i18n="join.v3.t">Профессиональный рост</h5>
+                <p data-i18n="join.v3.d">Работа с передовыми технологиями и общение с международными специалистами</p>
             </div>
         </div>
         <div class="join-value">
             <div class="join-value-icon">🤝</div>
             <div>
-                <h5>Горизонтальная структура</h5>
-                <p>Нет начальников и подчинённых — только коллеги с общими целями и взаимным уважением</p>
+                <h5 data-i18n="join.v4.t">Горизонтальная структура</h5>
+                <p data-i18n="join.v4.d">Нет начальников и подчинённых — только коллеги с общими целями и взаимным уважением</p>
             </div>
         </div>
     </div>
 
     <div class="join-form-wrap" data-aos="fade-up" data-aos-delay="100">
-        <h3>Расскажите о себе</h3>
-        <p class="jfdesc">Заполните форму — мы свяжемся с вами через защищённый канал</p>
-        <div class="fg"><label>О себе</label><textarea class="fi" name="about" id="join-about" placeholder="Кто вы, чем занимаетесь, что вас мотивирует..." style="min-height:100px"></textarea></div>
-        <div class="fg"><label>Опыт и стек</label><textarea class="fi" name="experience" id="join-experience" placeholder="Ваш профессиональный опыт, технологии, научные области..." style="min-height:100px"></textarea></div>
-        <div class="fg"><label>Хобби и увлечения</label><textarea class="fi" name="hobbies" id="join-hobbies" placeholder="Чем увлекаетесь помимо работы? Это помогает нам лучше понять вас как личность..." style="min-height:80px"></textarea></div>
-        <div class="fg"><label>Контакты для связи</label><input type="text" class="fi" name="contact" id="join-contact" placeholder="Telegram, email или любой удобный мессенджер..."></div>
+        <h3 data-i18n="join.form.t">Расскажите о себе</h3>
+        <p class="jfdesc" data-i18n="join.form.d">Заполните форму — мы свяжемся с вами через защищённый канал</p>
+        <div class="fg"><label data-i18n="join.form.l1">О себе</label><textarea class="fi" name="about" id="join-about" data-i18n-ph="join.form.ph1" placeholder="Кто вы, чем занимаетесь, что вас мотивирует..." style="min-height:100px"></textarea></div>
+        <div class="fg"><label data-i18n="join.form.l2">Опыт и стек</label><textarea class="fi" name="experience" id="join-experience" data-i18n-ph="join.form.ph2" placeholder="Ваш профессиональный опыт, технологии, научные области..." style="min-height:100px"></textarea></div>
+        <div class="fg"><label data-i18n="join.form.l3">Хобби и увлечения</label><textarea class="fi" name="hobbies" id="join-hobbies" data-i18n-ph="join.form.ph3" placeholder="Чем увлекаетесь помимо работы? Это помогает нам лучше понять вас как личность..." style="min-height:80px"></textarea></div>
+        <div class="fg"><label data-i18n="join.form.l4">Контакты для связи</label><input type="text" class="fi" name="contact" id="join-contact" data-i18n-ph="join.form.ph4" placeholder="Telegram, email или любой удобный мессенджер..."></div>
         <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden" aria-hidden="true"><input type="text" name="website" id="join-hp" tabindex="-1" autocomplete="off"></div>
-        <button class="btn btn--green" style="width:100%;padding:14px;font-size:15px;margin-top:12px" onclick="submitJoin()">Присоединиться</button>
-        <p class="modal-alt">или напишите напрямую: <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">@LogicArchitecture</a></p>
+        <button class="btn btn--green" style="width:100%;padding:14px;font-size:15px;margin-top:12px" onclick="submitJoin()" data-i18n="join.form.btn">Присоединиться</button>
+        <p class="modal-alt" data-i18n-html="join.form.alt">или напишите напрямую: <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">@LogicArchitecture</a></p>
     </div>
 </div>
 
@@ -1200,25 +1226,25 @@
 
 <!-- FOOTER -->
 <footer class="footer">
-    <p>© 2026 Logic Architecture. Консалтинг · Разработка · Документация<br>
+    <p data-i18n-html="footer.copy">© 2026 Logic Architecture. Консалтинг · Разработка · Документация<br>
     <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener">Telegram</a> · Конфиденциально · Все права защищены</p>
-    <p style="margin-top:12px;font-size:11px;color:var(--t3);max-width:600px;margin-left:auto;margin-right:auto;line-height:1.5">Материалы, предоставляемые Logic Architecture в рамках образовательных услуг, носят вспомогательный характер и предназначены для помощи в подготовке учебных работ.</p>
+    <p style="margin-top:12px;font-size:11px;color:var(--t3);max-width:600px;margin-left:auto;margin-right:auto;line-height:1.5" data-i18n="footer.disc">Материалы, предоставляемые Logic Architecture в рамках образовательных услуг, носят вспомогательный характер и предназначены для помощи в подготовке учебных работ.</p>
 </footer>
 
 <!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal modal--contact">
         <button class="modal-close" onclick="closeModal()">×</button>
-        <h3>Связаться с нами</h3>
-        <p class="mdesc">Напишите нам в Telegram — максимально подробно изложите вашу задачу, чтобы мы могли оказать качественную консультацию:</p>
+        <h3 data-i18n="modal.t">Связаться с нами</h3>
+        <p class="mdesc" data-i18n="modal.d">Напишите нам в Telegram — максимально подробно изложите вашу задачу, чтобы мы могли оказать качественную консультацию:</p>
         <ul class="contact-list">
-            <li>Тип задачи (разработка, документация, исследование…)</li>
-            <li>Описание проекта или проблемы</li>
-            <li>Сроки и бюджет</li>
+            <li data-i18n="modal.i1">Тип задачи (разработка, документация, исследование…)</li>
+            <li data-i18n="modal.i2">Описание проекта или проблемы</li>
+            <li data-i18n="modal.i3">Сроки и бюджет</li>
         </ul>
         <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener" class="btn btn--tg">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.492-1.302.48-.428-.013-1.252-.242-1.865-.44-.751-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-            Написать в Telegram
+            <span data-i18n="modal.btn">Написать в Telegram</span>
         </a>
     </div>
 </div>
@@ -1492,6 +1518,52 @@ function showToast(msg,type='success'){
     setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),400)},4000);
 }
 
+// ===== I18N ENGINE =====
+let currentLang='ru',i18nCache={},typedInstance=null;
+function toggleLangMenu(){document.getElementById('langSw').classList.toggle('open')}
+document.addEventListener('click',function(e){var sw=document.getElementById('langSw');if(sw&&!sw.contains(e.target))sw.classList.remove('open')});
+function getI18n(key,fb){if(currentLang==='ru')return fb;var d=i18nCache[currentLang];return(d&&d[key])||fb}
+async function setLang(lang){
+    if(lang===currentLang){document.getElementById('langSw').classList.remove('open');return}
+    if(lang!=='ru'&&!i18nCache[lang]){
+        try{var r=await fetch('i18n/'+lang+'.json');if(!r.ok)throw 0;i18nCache[lang]=await r.json()}
+        catch(e){showToast('Language loading error','error');return}
+    }
+    applyLang(lang);
+}
+function applyLang(lang){
+    var dict=lang==='ru'?null:i18nCache[lang];
+    currentLang=lang;localStorage.setItem('la_lang',lang);document.documentElement.lang=lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+        var k=el.getAttribute('data-i18n');
+        if(lang==='ru'){if(el._i18nOrig!==undefined)el.textContent=el._i18nOrig}
+        else{if(el._i18nOrig===undefined)el._i18nOrig=el.textContent;if(dict[k]!==undefined)el.textContent=dict[k]}
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+        var k=el.getAttribute('data-i18n-html');
+        if(lang==='ru'){if(el._i18nOrigH!==undefined)el.innerHTML=el._i18nOrigH}
+        else{if(el._i18nOrigH===undefined)el._i18nOrigH=el.innerHTML;if(dict[k]!==undefined)el.innerHTML=dict[k]}
+    });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function(el){
+        var k=el.getAttribute('data-i18n-ph');
+        if(lang==='ru'){if(el._i18nOrigP!==undefined)el.placeholder=el._i18nOrigP}
+        else{if(el._i18nOrigP===undefined)el._i18nOrigP=el.placeholder;if(dict[k]!==undefined)el.placeholder=dict[k]}
+    });
+    reinitTyped(lang,dict);
+    document.getElementById('langCurrent').textContent=lang.toUpperCase();
+    document.querySelectorAll('.lang-opt').forEach(function(o){o.classList.toggle('active',o.dataset.lang===lang)});
+    document.getElementById('langSw').classList.remove('open');
+    document.querySelectorAll('.svc-item.open .svc-body').forEach(function(b){b.style.maxHeight=b.scrollHeight+'px'});
+    AOS.refresh();
+}
+function reinitTyped(lang,dict){
+    if(typedInstance){typedInstance.destroy();typedInstance=null}
+    var el=document.getElementById('typed-target');if(!el)return;
+    var strings=(lang==='ru')?['цифровые продукты','маркетинговые стратегии','веб-сервисы','мобильные приложения','техническую документацию']
+        :(dict&&dict['typed.strings'])||['digital products','marketing strategies','web services','mobile apps','technical documentation'];
+    typedInstance=new Typed('#typed-target',{strings:strings,typeSpeed:70,backSpeed:40,backDelay:2000,loop:true,showCursor:true,cursorChar:'|'});
+}
+
 // ===== FORM HELPERS =====
 const API_URL='https://la-api.ravinski-genlawyer.workers.dev';
 const pageLoadTime=Date.now();
@@ -1507,25 +1579,25 @@ async function submitJoin(){
     const hp=document.getElementById('join-hp').value;
     if(hp)return;
     if(Date.now()-pageLoadTime<3000)return;
-    if(isRateLimited()){showToast('Подождите минуту перед повторной отправкой','warning');return}
-    if(!contact){showToast('Укажите контакт для связи','warning');return}
+    if(isRateLimited()){showToast(getI18n('toast.ratelimit','Подождите минуту перед повторной отправкой'),'warning');return}
+    if(!contact){showToast(getI18n('toast.nocontact','Укажите контакт для связи'),'warning');return}
     const btn=document.querySelector('.join-form-wrap .btn--green');
-    btn.disabled=true;btn.textContent='Отправляем...';
+    btn.disabled=true;btn.textContent=getI18n('toast.sending','Отправляем...');
     try{
         const res=await fetch(API_URL+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({about,experience,hobbies,contact})});
         if(!res.ok)throw new Error();
-        showToast('Заявка отправлена! Мы свяжемся через защищённый канал','success');setRateLimit();
+        showToast(getI18n('toast.success','Заявка отправлена! Мы свяжемся через защищённый канал'),'success');setRateLimit();
         document.getElementById('join-about').value='';document.getElementById('join-experience').value='';
         document.getElementById('join-hobbies').value='';document.getElementById('join-contact').value='';
-    }catch{showToast('Ошибка отправки. Напишите нам напрямую в Telegram','error')}
-    finally{btn.disabled=false;btn.textContent='Присоединиться'}
+    }catch{showToast(getI18n('toast.error','Ошибка отправки. Напишите нам напрямую в Telegram'),'error')}
+    finally{btn.disabled=false;btn.textContent=getI18n('join.form.btn','Присоединиться')}
 }
 
 // ===== AOS INIT =====
 AOS.init({duration:600,once:true,offset:80});
 
-// ===== TYPED.JS =====
-new Typed('#typed-target',{strings:['цифровые продукты','маркетинговые стратегии','веб-сервисы','мобильные приложения','техническую документацию'],typeSpeed:70,backSpeed:40,backDelay:2000,loop:true,showCursor:true,cursorChar:'|'});
+// ===== I18N INIT =====
+(function(){var s=localStorage.getItem('la_lang');if(s&&s!=='ru'&&['en','vi','zh'].indexOf(s)!==-1){setLang(s)}else{typedInstance=new Typed('#typed-target',{strings:['цифровые продукты','маркетинговые стратегии','веб-сервисы','мобильные приложения','техническую документацию'],typeSpeed:70,backSpeed:40,backDelay:2000,loop:true,showCursor:true,cursorChar:'|'})}})();
 
 </script>
 </body>
