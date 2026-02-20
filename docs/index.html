@@ -1232,7 +1232,7 @@ const isMobile=isIOS||('ontouchstart' in window&&window.innerWidth<1024);
 const LGHT_LEVELS=isMobile?3:4,LGHT_DISP=0.12,LGHT_REGEN=isMobile?5:3;
 const LGHT_MAX_CONN=isMobile?3:6,LGHT_TENDRIL=isMobile?0:0.15;
 const LGHT_FLICK_SPD=0.35,LGHT_FLICK_AMP=0.25;
-const ICON_BASE=isMobile?5:6,ICON_VAR=isMobile?2:3,ICON_SW=1.2,ICON_GLOW=4;
+const ICON_BASE=isMobile?10:12,ICON_VAR=isMobile?4:6,ICON_SW=1.2,ICON_GLOW=6;
 const ICON_PATHS=[];
 (function(){
     // 1. Document — rectangle with folded corner
@@ -1404,7 +1404,7 @@ draw(){
     ctx.restore();
 }}
 
-function initParticles(){let c=Math.min(Math.floor(canvas.width*canvas.height/22000),60);if(isIOS)c=Math.min(c,30);particles=[];connections=[];for(let i=0;i<c;i++)particles.push(new Particle())}
+function initParticles(){let c=Math.min(Math.floor(canvas.width*canvas.height/28000),45);if(isIOS)c=Math.min(c,25);particles=[];connections=[];for(let i=0;i<c;i++)particles.push(new Particle())}
 function tryNewConnections(){
     if(connections.length>=LGHT_MAX_CONN)return;
     for(let i=0;i<particles.length;i++){
