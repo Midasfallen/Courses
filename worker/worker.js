@@ -59,7 +59,8 @@ function formatOrder(d) {
 function formatJoin(d) {
     const time = new Date().toLocaleString('ru-RU', { timeZone: 'Europe/Moscow' });
     return `🌐 <b>Заявка на присоединение</b>\n━━━━━━━━━━━━━━━━━\n\n` +
-        `👤 <b>О себе:</b>\n<i>${esc(d.about || '—')}</i>\n\n💻 <b>Опыт:</b>\n<i>${esc(d.experience || '—')}</i>\n\n` +
+        `👤 <b>Имя:</b> ${esc(d.name || '—')}\n\n` +
+        `📝 <b>О себе:</b>\n<i>${esc(d.about || '—')}</i>\n\n💻 <b>Опыт:</b>\n<i>${esc(d.experience || '—')}</i>\n\n` +
         `🎯 <b>Хобби:</b>\n<i>${esc(d.hobbies || '—')}</i>\n\n📱 <b>Контакт:</b> ${esc(d.contact)}\n\n⏰ <code>${time} МСК</code>`;
 }
 

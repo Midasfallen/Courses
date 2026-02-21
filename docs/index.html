@@ -437,6 +437,7 @@
             .modal{padding:32px 24px;border-radius:20px}
             .svc-head{padding:14px 12px}
             .svc-body-inner{padding:0 12px 16px}
+            .lang-menu{right:-10px;max-width:calc(100vw - 20px)}
         }
 
         /* ===== BACKDROP FALLBACK ===== */
@@ -924,37 +925,37 @@
         <div class="tcard">
             <div class="tcard-icon">🧠</div>
             <div class="tcard-tag">AI Engine</div>
-            <h3>Large Language Models</h3>
+            <h3 data-i18n="tech.c1.t">Large Language Models</h3>
             <p data-i18n="tech.c1.d">Передовые open-source модели для рутинных задач. Самые мощные коммерческие модели для стратегического планирования, глубокого анализа и научного синтеза</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">📚</div>
             <div class="tcard-tag">Knowledge Base</div>
-            <h3>RAG + Obsidian</h3>
+            <h3 data-i18n="tech.c2.t">RAG + Obsidian</h3>
             <p data-i18n="tech.c2.d">Retrieval-Augmented Generation на собственной базе знаний. Obsidian как граф-хранилище с перелинковкой тысяч научных источников и методик</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">🔍</div>
             <div class="tcard-tag">Search Layer</div>
-            <h3>AnythingLLM + Embeddings</h3>
+            <h3 data-i18n="tech.c3.t">AnythingLLM + Embeddings</h3>
             <p data-i18n="tech.c3.d">Семантический поиск по корпусу документов через векторные эмбеддинги. Мгновенное нахождение релевантных источников из миллионов фрагментов</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">⚡</div>
             <div class="tcard-tag">Backend</div>
-            <h3>NestJS + PostgreSQL</h3>
+            <h3 data-i18n="tech.c4.t">NestJS + PostgreSQL</h3>
             <p data-i18n="tech.c4.d">Enterprise-grade backend на NestJS с TypeScript. PostgreSQL для реляционных данных, Vector DB для семантических запросов, Redis 7 для кэширования</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">🔎</div>
             <div class="tcard-tag">Infrastructure</div>
-            <h3>Meilisearch + MinIO</h3>
+            <h3 data-i18n="tech.c5.t">Meilisearch + MinIO</h3>
             <p data-i18n="tech.c5.d">Молниеносный полнотекстовый поиск через Meilisearch. S3-совместимое объектное хранилище MinIO для безопасного хранения документов</p>
         </div>
         <div class="tcard">
             <div class="tcard-icon">💬</div>
             <div class="tcard-tag">Communications</div>
-            <h3>P2P Encrypted Messaging</h3>
+            <h3 data-i18n="tech.c6.t">P2P Encrypted Messaging</h3>
             <p data-i18n="tech.c6.d">Общение между специалистами по peer-to-peer протоколу со сквозным шифрованием. Без серверов-посредников. Ваши данные не покидают защищённый контур</p>
         </div>
     </div>
@@ -1060,12 +1061,12 @@
                 Построил блестящую карьеру в двух крупнейших банках страны, управляя системами, обрабатывающими триллионы. Руководил отделами системного анализа, проектировал архитектуру критически важных финансовых платформ. Но корпоративная бюрократия не давала пространства для настоящих инноваций.
             </p>
             <div class="about-markers">
-                <span class="about-marker">Магистр экономики</span>
-                <span class="about-marker">Systems Architect</span>
-                <span class="about-marker">AI Engineering</span>
-                <span class="about-marker">Open Source</span>
-                <span class="about-marker">Hugging Face</span>
-                <span class="about-marker">GitHub</span>
+                <span class="about-marker" data-i18n="abt.m1">Магистр экономики</span>
+                <span class="about-marker" data-i18n="abt.m2">Systems Architect</span>
+                <span class="about-marker" data-i18n="abt.m3">AI Engineering</span>
+                <span class="about-marker" data-i18n="abt.m4">Open Source</span>
+                <span class="about-marker" data-i18n="abt.m5">Hugging Face</span>
+                <span class="about-marker" data-i18n="abt.m6">GitHub</span>
             </div>
         </div>
     </div>
@@ -1106,7 +1107,7 @@
         <div class="dao-header">
             <div class="dao-icon-wrap"><span>🌐</span></div>
             <div>
-                <h3>Decentralized Autonomous Organization</h3>
+                <h3 data-i18n="abt.dao.t">Глобальное сообщество</h3>
                 <div class="dao-sub" data-i18n="abt.dao.sub">Распределённая по всему миру структура нового типа</div>
             </div>
         </div>
@@ -1116,22 +1117,22 @@
         <div class="dao-grid">
             <div class="dao-card">
                 <div class="dao-card-icon">🔗</div>
-                <h4>Distributed Network</h4>
+                <h4 data-i18n="abt.dao.c1t">Распределённая сеть</h4>
                 <p data-i18n="abt.dao.c1">Участники работают из разных точек мира. Нет центрального офиса, нет корпоративной иерархии — только общие цели и горизонтальные связи между профессионалами.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🛡️</div>
-                <h4>Privacy & Security</h4>
+                <h4 data-i18n="abt.dao.c2t">Конфиденциальность</h4>
                 <p data-i18n="abt.dao.c2">Максимальная анонимность и безопасность каждого участника. Сквозное шифрование, P2P-коммуникации, никаких реальных данных в открытом доступе.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🧬</div>
-                <h4>Collaborative Science</h4>
+                <h4 data-i18n="abt.dao.c3t">Совместная наука</h4>
                 <p data-i18n="abt.dao.c3">Участники помогают текущим проектам в соответствии со своей квалификацией и интересами: от научных исследований до разработки инфраструктуры.</p>
             </div>
             <div class="dao-card">
                 <div class="dao-card-icon">🤝</div>
-                <h4>Open Community</h4>
+                <h4 data-i18n="abt.dao.c4t">Открытое сообщество</h4>
                 <p data-i18n="abt.dao.c4">Мы ищем не только сеньоров-разработчиков и докторов наук — мы приглашаем всех, кому близки наши цели и идеи. Важна мотивация, а не формальный статус.</p>
             </div>
         </div>
@@ -1212,6 +1213,7 @@
     <div class="join-form-wrap" data-aos="fade-up" data-aos-delay="100">
         <h3 data-i18n="join.form.t">Расскажите о себе</h3>
         <p class="jfdesc" data-i18n="join.form.d">Заполните форму — мы свяжемся с вами через защищённый канал</p>
+        <div class="fg"><label data-i18n="join.form.l0">Имя</label><input type="text" class="fi" name="name" id="join-name" data-i18n-ph="join.form.ph0" placeholder="Как к вам обращаться..."></div>
         <div class="fg"><label data-i18n="join.form.l1">О себе</label><textarea class="fi" name="about" id="join-about" data-i18n-ph="join.form.ph1" placeholder="Кто вы, чем занимаетесь, что вас мотивирует..." style="min-height:100px"></textarea></div>
         <div class="fg"><label data-i18n="join.form.l2">Опыт и стек</label><textarea class="fi" name="experience" id="join-experience" data-i18n-ph="join.form.ph2" placeholder="Ваш профессиональный опыт, технологии, научные области..." style="min-height:100px"></textarea></div>
         <div class="fg"><label data-i18n="join.form.l3">Хобби и увлечения</label><textarea class="fi" name="hobbies" id="join-hobbies" data-i18n-ph="join.form.ph3" placeholder="Чем увлекаетесь помимо работы? Это помогает нам лучше понять вас как личность..." style="min-height:80px"></textarea></div>
@@ -1254,6 +1256,7 @@
 <script>
 // ===== CANVAS — chaotic particles with rare temporary connections =====
 const canvas=document.getElementById('neural-bg'),ctx=canvas.getContext('2d');
+if(!ctx){console.warn('Canvas 2D not supported');document.getElementById('neural-bg').style.display='none';}else{
 let mouseX=-9999,mouseY=-9999,particles=[],connections=[];
 const CONN_DIST=180,CONN_CHANCE=0.003,CONN_DURATION_MIN=60,CONN_DURATION_MAX=180;
 function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
@@ -1457,6 +1460,7 @@ function animate(){
 resizeCanvas();initParticles();animate();
 window.addEventListener('resize',()=>{resizeCanvas();initParticles()});
 document.addEventListener('mousemove',e=>{mouseX=e.clientX;mouseY=e.clientY});
+}
 
 // ===== TABS =====
 const tabs=document.querySelectorAll('.nav-tab'),tcs=document.querySelectorAll('.tc'),navEl=document.getElementById('nav'),hamEl=document.getElementById('ham');
@@ -1572,6 +1576,7 @@ function setRateLimit(){localStorage.setItem('la_rl',Date.now().toString())}
 
 // ===== SUBMIT JOIN =====
 async function submitJoin(){
+    const name=document.getElementById('join-name').value.trim();
     const about=document.getElementById('join-about').value.trim();
     const experience=document.getElementById('join-experience').value.trim();
     const hobbies=document.getElementById('join-hobbies').value.trim();
@@ -1580,14 +1585,15 @@ async function submitJoin(){
     if(hp)return;
     if(Date.now()-pageLoadTime<3000)return;
     if(isRateLimited()){showToast(getI18n('toast.ratelimit','Подождите минуту перед повторной отправкой'),'warning');return}
+    if(!name){showToast(getI18n('toast.noname','Укажите имя'),'warning');return}
     if(!contact){showToast(getI18n('toast.nocontact','Укажите контакт для связи'),'warning');return}
     const btn=document.querySelector('.join-form-wrap .btn--green');
     btn.disabled=true;btn.textContent=getI18n('toast.sending','Отправляем...');
     try{
-        const res=await fetch(API_URL+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({about,experience,hobbies,contact})});
+        const res=await fetch(API_URL+'/join',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,about,experience,hobbies,contact})});
         if(!res.ok)throw new Error();
         showToast(getI18n('toast.success','Заявка отправлена! Мы свяжемся через защищённый канал'),'success');setRateLimit();
-        document.getElementById('join-about').value='';document.getElementById('join-experience').value='';
+        document.getElementById('join-name').value='';document.getElementById('join-about').value='';document.getElementById('join-experience').value='';
         document.getElementById('join-hobbies').value='';document.getElementById('join-contact').value='';
     }catch{showToast(getI18n('toast.error','Ошибка отправки. Напишите нам напрямую в Telegram'),'error')}
     finally{btn.disabled=false;btn.textContent=getI18n('join.form.btn','Присоединиться')}
