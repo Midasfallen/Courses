@@ -3,3 +3,6 @@ nul
 worker/.dev.vars
 worker/.wrangler/
 worker/node_modules/
+server/.env
+server/node_modules/
+certbot/

@@ -8,7 +8,9 @@
     <meta property="og:title" content="Logic Architecture — Консалтинг и разработка">
     <meta property="og:description" content="Маркетинг, разработка, документация. Технологический подход с собственным AI-стеком и опытом enterprise-проектов.">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://logic-architecture.com">
     <meta property="og:locale" content="ru_RU">
+    <link rel="canonical" href="https://logic-architecture.com">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234f7df5' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 2L2 7l10 5 10-5-10-5z'/><path d='M2 17l10 5 10-5'/><path d='M2 12l10 5 10-5'/></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
@@ -1569,7 +1571,7 @@ function reinitTyped(lang,dict){
 }
 
 // ===== FORM HELPERS =====
-const API_URL='https://la-api.ravinski-genlawyer.workers.dev';
+const API_URL=location.hostname.includes('pages.dev')?'https://la-api.ravinski-genlawyer.workers.dev':'/api';
 const pageLoadTime=Date.now();
 function isRateLimited(){const t=localStorage.getItem('la_rl');return t&&Date.now()-parseInt(t)<60000}
 function setRateLimit(){localStorage.setItem('la_rl',Date.now().toString())}
