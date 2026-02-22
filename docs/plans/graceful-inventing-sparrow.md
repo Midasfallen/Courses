@@ -400,10 +400,10 @@ CSS для `.modal-alt`:
 
 ## Файлы для изменения
 
-- `C:\Courses\docs\index.html` — откат Lottie, библиотеки, формы, контакты, meta
-- `C:\Courses\worker\worker.js` — **НОВЫЙ** — Cloudflare Worker прокси
-- `C:\Courses\worker\wrangler.toml` — **НОВЫЙ** — конфигурация Worker
-- Удалить: `C:\Courses\docs\assets\lottie\loadingV2.json`, `Server.json`
+- `C:\Logic-Architecture\docs\index.html` — откат Lottie, библиотеки, формы, контакты, meta
+- `C:\Logic-Architecture\worker\worker.js` — **НОВЫЙ** — Cloudflare Worker прокси
+- `C:\Logic-Architecture\worker\wrangler.toml` — **НОВЫЙ** — конфигурация Worker
+- Удалить: `C:\Logic-Architecture\docs\assets\lottie\loadingV2.json`, `Server.json`
 
 ---
 

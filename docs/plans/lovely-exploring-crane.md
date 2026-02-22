@@ -1,86 +1,81 @@
-# План: Задеплоить сайт Logic Architecture на Cloudflare Pages
+# План: Модалка «Написать в Telegram» вместо формы заявки
 
 ## Контекст
 
-Сайт Logic Architecture (`docs/index.html`) полностью готов: 7 табов, формы → Cloudflare Worker → Telegram, анимации, адаптивность. Worker задеплоен на `la-api.ravinski-genlawyer.workers.dev`. **Сайт нигде не опубликован.** Нужно разместить на Cloudflare Pages. Пока без кастомного домена — используем бесплатный `*.pages.dev`.
+Сейчас на сайте CTA-кнопки («Узнать стоимость», «Оставить заявку» и т.д.) открывают модальную форму, которая собирает данные и отправляет их через Cloudflare Worker в Telegram-бот. Основатель хочет убрать этот промежуточный шаг: вместо формы показывать модалку с призывом описать задачу и кнопкой «Написать» → прямая ссылка на Telegram `@LogicArchitecture`. Так клиент сам пишет в Telegram, что проще и надёжнее.
 
----
+## Что делаем
 
-## Шаг 1: Обновить CLAUDE.md (Claude, код)
+### 1. Новая модалка «Связаться» (HTML)
 
-Добавить в `C:\Courses\CLAUDE.md` раздел о деплое и инфраструктуре:
-- Хостинг: Cloudflare Pages, publish directory `docs/`
-- Автодеплой при `git push origin main`
-- Worker: `la-api.ravinski-genlawyer.workers.dev` (эндпоинты `/order`, `/join`)
-- Домен: пока `*.pages.dev`, кастомный домен позже
-- Telegram-бот: заявки приходят в чат через Worker
-- Добавить что Claude может управлять Cloudflare через браузер (Chrome MCP + Windows MCP)
+Заменяем содержимое существующей модалки (`#modalOverlay`, строки 1015–1043) на:
 
----
-
-## Шаг 2: Подготовить файлы для деплоя (Claude, код)
-
-### 2.1 Создать `docs/_headers`
-```
-/*
-  X-Frame-Options: DENY
-  X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
+```html
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal modal--contact">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3>Связаться с нами</h3>
+        <p class="mdesc">Максимально подробно изложите вашу задачу, чтобы мы могли оказать вам качественную консультацию:<br><br>
+        — Тип работы (курсовая, диплом, статья…)<br>
+        — Тема или направление<br>
+        — Сроки и особые требования</p>
+        <a href="https://t.me/LogicArchitecture" target="_blank" rel="noopener" class="btn btn--tg">
+            <svg>...</svg> Написать в Telegram
+        </a>
+    </div>
+</div>
 ```
 
-### 2.2 Обновить ALLOWED_ORIGIN в Worker
-**Файл:** `worker/wrangler.toml` (строка 6)
+- Убираем все поля формы (input, select, textarea, honeypot)
+- Убираем кнопку «Отправить заявку» и `submitOrder()`
+- Добавляем кнопку-ссылку `.btn--tg` с иконкой Telegram (inline SVG)
+- Ссылка `https://t.me/LogicArchitecture` — откроет Telegram-приложение или веб-версию
 
-Сейчас `ALLOWED_ORIGIN = "https://logicarchitecture.ru"` — домена ещё нет. После деплоя Pages обновить на реальный `*.pages.dev` URL. Также исправить CORS в `worker/worker.js` (строки 35, 66-73) — проверять origin.
+### 2. CSS для кнопки Telegram (добавить в секцию `/* ===== MODAL ===== */`)
 
-### 2.3 Закоммитить и запушить
+Новый класс `.btn--tg`:
+- Фон: градиент Telegram (#2AABEE → #229ED9) или просто синий
+- Иконка SVG слева (20×20), текст справа
+- width: 100%, крупная кнопка, по стилистике как `.btn--gold`
+- Hover: подсветка
 
----
+### 3. JS — упрощение
 
-## Шаг 3: Создать проект Cloudflare Pages (Claude, через браузер)
+- `openModal()` — оставить только открытие/закрытие, убрать параметр `preselect` (больше нет select)
+- `closeModal()` — без изменений
+- `submitOrder()` — удалить полностью
+- Антиспам-переменные (`pageLoadTime`, `isRateLimited`, `setRateLimit`) — можно оставить на случай будущего использования, или удалить для чистоты
 
-1. Открыть `dash.cloudflare.com` в Chrome
-2. Войти в аккаунт (если нужна авторизация — попросить пользователя)
-3. **Workers & Pages** → **Create**
-4. Вкладка **Pages** → **Connect to Git**
-5. Выбрать репозиторий `Midasfallen/Courses`
-6. Настройки:
-   - **Production branch:** `main`
-   - **Build command:** (пусто)
-   - **Build output directory:** `docs`
-7. **Save and Deploy**
-8. Дождаться деплоя, получить URL `*.pages.dev`
+### 4. CTA-кнопки — обновить onclick
 
----
+Все 10 кнопок сейчас вызывают `openModal('Курсовая работа')` и т.д. с `preselect`. Упростить до `openModal()` без параметра (нет больше select для предвыбора).
 
-## Шаг 4: Обновить Worker ALLOWED_ORIGIN (Claude, код)
+**Файлы:** строки ~517, 526, 535, 544, 553, 562 в `docs/index.html`
 
-После получения реального `*.pages.dev` URL:
-1. Обновить `wrangler.toml` → `ALLOWED_ORIGIN = "https://xxx.pages.dev"`
-2. Задеплоить Worker: `wrangler deploy` (или попросить пользователя)
+### 5. Кнопка в хедере — переименовать
 
----
+Строка 425: `Оставить заявку` → `Связаться с нами` или оставить как есть (решит пользователь).
 
-## Шаг 5: Проверить работу (Claude, через браузер)
+### 6. Worker и форма Join — не трогать
 
-1. Открыть полученный `*.pages.dev` URL
-2. Проверить: все табы, формы, анимации
-3. Отправить тестовую заявку → убедиться что приходит в Telegram
+- Worker `/order` оставить — может понадобиться позже
+- Форма Join (`submitJoin()`, вкладка «Присоединиться») — не трогать, она работает отдельно
 
 ---
 
-## Файлы
+## Файлы для изменения
 
-| Файл | Действие |
-|------|----------|
-| `CLAUDE.md` | Добавить раздел о деплое/инфраструктуре |
-| `docs/_headers` | Создать |
-| `worker/wrangler.toml` | Обновить ALLOWED_ORIGIN после деплоя |
-| `worker/worker.js` | Исправить CORS |
+| Файл | Что меняется |
+|------|-------------|
+| `docs/index.html` строки 268–282 | CSS: добавить `.btn--tg`, `.modal--contact` |
+| `docs/index.html` строки 1015–1043 | HTML: заменить содержимое модалки |
+| `docs/index.html` строки 517–562 | HTML: убрать preselect из onclick кнопок |
+| `docs/index.html` строки 1172–1214 | JS: упростить openModal, удалить submitOrder |
 
 ## Верификация
 
-1. `*.pages.dev` загружается с HTTPS
-2. Все 7 табов отображаются корректно
-3. Форма заявки → сообщение приходит в Telegram
-4. Security headers присутствуют (`curl -I`)
+1. Открыть `https://logic-architecture.pages.dev` после деплоя
+2. Нажать любую CTA-кнопку → модалка с текстом + кнопка «Написать в Telegram»
+3. Нажать кнопку → открывается Telegram с профилем @LogicArchitecture
+4. Escape / клик по оверлею → модалка закрывается
+5. Мобильная версия (375px) → модалка адаптивна
