@@ -1,6 +1,6 @@
 # Logic Architecture
 
-Консалтинговая и девелоперская компания. Помощь студентам с подготовкой учебных работ (B2C) и техническая документация для бизнеса (B2B).
+Консалтинговая и девелоперская компания с собственным AI-стеком. Маркетинговые исследования, разработка продуктов, техническая документация, помощь студентам.
 
 **Продакшен:** [logic-architecture.com](https://logic-architecture.com)
 
@@ -41,8 +41,7 @@ Logic-Architecture/
 ├── docs/                  # Сайт (Cloudflare Pages publish dir)
 │   ├── index.html         # Single-file SPA
 │   ├── i18n/              # Переводы (en.json, vi.json, zh.json)
-│   ├── strategy/          # Маркетинговая стратегия
-│   ├── knowledge-base/    # Внутренние методики
+│   ├── strategy/          # Маркетинговая стратегия v3.0
 │   └── plans/             # Планы реализации
 ├── server/                # Express API
 │   ├── server.js
